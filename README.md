@@ -1,1 +1,1 @@
-# seo-geo-content-strategy-skill
+# seo-geo-strategy-skill
