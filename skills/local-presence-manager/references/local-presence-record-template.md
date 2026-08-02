@@ -33,8 +33,10 @@ Run type: complete run | observation-only run (stop-and-ask gate 2, option 3)
 | local_presence.canonical_nap.address | <value or "missing"> | User-provided |
 | local_presence.canonical_nap.phone | <value or "missing"> | User-provided |
 | local_presence.service_area_mode | <value or "missing"> | User-provided |
+| local_presence_extra.service_areas | <value or "not set"> | User-provided |
 | constraints.excluded_topics | <value or "not set"> | User-provided |
 | constraints.retired_services | <value or "not set"> | User-provided |
+| outputs.local-presence-manager.path | <value or "not set"> | User-provided |
 
 Missing required keys: <list, or "none">
 seo-geo-research pack supplied: <path or "none — optional input not supplied">

@@ -43,22 +43,26 @@ runs. The unit is never widened mid-run.
 | `project-config.yaml` → `research_tools.available` | Which tools may be used |
 | `project-config.yaml` → `research_tools.access_mode` | `manual_paste`, `browser_agent`, or `api` |
 | `project-config.yaml` → `constraints.excluded_topics`, `constraints.held_topics`, `constraints.retired_services` | Optional. Gate the unit before any work starts |
+| `project-config.yaml` → `outputs.seo-geo-research.path` | Optional. The directory the evidence pack is written to. Absent means in-session only |
 | Operator | The unit, seed terms, and — under `manual_paste` — every tool artifact |
 | Observed surfaces | SERPs, tool panels, exports, Search Console query export |
 
-This Skill does not read `planning_record.*`. It writes no planning row.
+This Skill does not read `planning_record.*`. It writes no planning row. It
+reads no other Skill's key under `outputs` — those keys are never shared.
 
 **Writes.**
 
 - The evidence pack, always, emitted in session.
-- Optionally, when the operator supplies an output directory at run time:
-  `<operator-supplied-dir>/<client.id>-<topic-slug>-keyword-evidence-<YYYY-MM-DD>.md`
+- Optionally, when an output directory is available — `outputs.seo-geo-research.path`,
+  or a directory the operator supplies at run time:
+  `<output-dir>/<client.id>-<topic-slug>-keyword-evidence-<YYYY-MM-DD>.md`
   and, when a candidate table is wanted separately,
-  `<operator-supplied-dir>/<client.id>-<topic-slug>-candidates-<YYYY-MM-DD>.csv`
+  `<output-dir>/<client.id>-<topic-slug>-candidates-<YYYY-MM-DD>.csv`
 
-There is no config key for a research output directory and none is assumed. If
-the operator supplies no directory, the pack is emitted in session and the pack
-says so. A path is never invented.
+`outputs.seo-geo-research.path` is this Skill's one output key. When it is
+absent and the operator supplies no directory, the pack is emitted in session
+and the pack says so. A path is never invented, and another Skill's key under
+`outputs` is never borrowed.
 
 **Done when.** Every item is checked by looking at the pack, and the result of
 every check is written into the pack (step 11), pass or fail.
@@ -177,8 +181,9 @@ Proceed, apply the default, and state the assumption in the pack.
 5. **Query-read intent and SERP-read intent disagree.** Record both, mark the
    SERP read authoritative, and flag the disagreement as a finding.
 6. **`research_tools.available` is empty.** Run zero-tool discovery. Do not ask.
-7. **No output directory supplied.** Emit in session and state that no file was
-   written.
+7. **No output directory supplied.** `outputs.seo-geo-research.path` is absent
+   and the operator named no directory. Emit in session and state that no file
+   was written.
 8. **A candidate's SERP could not be observed.** Mark it
    `Unknown — not observed`. Do not infer composition.
 

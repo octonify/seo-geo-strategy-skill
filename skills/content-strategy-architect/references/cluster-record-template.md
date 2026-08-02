@@ -32,6 +32,7 @@ is owned by <authority.authority_override_skill>.
 | constraints.excluded_topics | <value or "not set"> | User-provided |
 | constraints.held_topics | <value or "not set"> | User-provided |
 | constraints.retired_services | <value or "not set"> | User-provided |
+| outputs.content-strategy-architect.path | <value or "not set"> | User-provided |
 
 Missing required keys: <list, or "none">
 Output file written to: <path, or "none — emitted in session only">

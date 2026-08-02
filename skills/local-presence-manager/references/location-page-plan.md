@@ -16,7 +16,7 @@ rather than from a preference.
 | Mode | Pages | Each page carries | Each page does not carry |
 |---|---|---|---|
 | `storefront` | One page per physical location | The canonical NAP as visible text · an embedded map of the location · one owning locality | — |
-| `service_area` | One page per service area named by the operator or config | The canonical NAP **name and phone** as visible text · the defined service area stated · one owning locality | **No published street address and no embedded map.** The guideline read in [`gbp-checklist.md`](gbp-checklist.md) §1 states a service-area business should hide its address, and a page publishing what the profile hides reintroduces the inconsistency the canonical exists to prevent |
+| `service_area` | One page per service area in `local_presence_extra.service_areas`, or named by the operator at run time when that key is absent | The canonical NAP **name and phone** as visible text · the defined service area stated · one owning locality | **No published street address and no embedded map.** The guideline read in [`gbp-checklist.md`](gbp-checklist.md) §1 states a service-area business should hide its address, and a page publishing what the profile hides reintroduces the inconsistency the canonical exists to prevent |
 | `hybrid` | Both patterns, side by side | Per the pattern each page belongs to | Per the pattern each page belongs to |
 
 Under `hybrid` the two patterns are produced separately and the record states
@@ -44,7 +44,7 @@ that they are the same place from the names alone.
 | The canonical NAP appears as visible text | Yes — which fields, per the mode | The wording around it: the voice Skill |
 | One owning locality | Yes | — |
 | Embedded map, or its absence | Yes, from the mode | — |
-| Service area stated | Yes, from config or the operator | How it is phrased: the voice Skill |
+| Service area stated | Yes, from `local_presence_extra.service_areas` or the operator | How it is phrased: the voice Skill |
 | Which term the page owns | No | `content-strategy-architect`, from an evidence pack |
 | Cluster role, boundary sentence, internal links | No | `content-strategy-architect` |
 | Schema type and its rich-result eligibility | No | `content-strategy-architect`, per its `schema-decision.md` and `docs/decisions.md` D26 |

@@ -56,11 +56,12 @@ in step 4.
 | `project-config.yaml` → `planning_record.owned_fields` | The only columns this bundle may write. Policy kernel §6 |
 | `project-config.yaml` → `planning_record.row_identifier_field` | The column that identifies a row. Absent is a blocking gap, not a default |
 | `project-config.yaml` → `constraints.excluded_topics`, `constraints.held_topics`, `constraints.retired_services` | Optional. Gate the cluster before any work starts |
+| `project-config.yaml` → `outputs.content-strategy-architect.path` | Optional. The directory the cluster architecture record is written to. Absent means in-session only |
 | Operator | The cluster, the pack, and any page inventory the planning record does not carry |
 
-This Skill does not read `research_output.path`. That key names where research
-output goes; this Skill's record is not research output. See the `Writes` rule
-below.
+This Skill does not read `outputs.seo-geo-research.path`. That key names where
+research output goes; this Skill's record is not research output. The keys under
+`outputs` are never shared between Skills. See the `Writes` rule below.
 
 **Writes.**
 
@@ -68,11 +69,14 @@ below.
 - The planning-record rows, into `planning_record.path`, confined to
   `planning_record.owned_fields`, per
   [`references/planning-record-protocol.md`](references/planning-record-protocol.md).
-- Optionally, when the operator supplies an output directory at run time:
-  `<operator-supplied-dir>/<client.id>-<cluster-slug>-cluster-architecture-<YYYY-MM-DD>.md`
+- Optionally, when an output directory is available —
+  `outputs.content-strategy-architect.path`, or a directory the operator
+  supplies at run time:
+  `<output-dir>/<client.id>-<cluster-slug>-cluster-architecture-<YYYY-MM-DD>.md`
 
-No path is invented. If the operator supplies no directory, the record is
-emitted in session and the record says so.
+`outputs.content-strategy-architect.path` is this Skill's one output key. No
+path is invented. When the key is absent and the operator supplies no directory,
+the record is emitted in session and the record says so.
 
 **Done when.** Every item is checked by looking at the record, and the result
 of every check is written into the record (step 13), pass or fail.
@@ -248,9 +252,10 @@ Proceed, apply the default, and state the assumption in the record.
    rich-result feature.** Recommend it for entity and answer-engine value
    only, mark its rich-result cell `no`, and state in the brief that no rich
    result follows from it. Never promise a SERP appearance.
-6. **No output directory was supplied.** Emit the record in session and state
-   that no file was written. The planning-record write is unaffected — it goes
-   to `planning_record.path`.
+6. **No output directory was supplied.** `outputs.content-strategy-architect.path`
+   is absent and the operator named no directory. Emit the record in session and
+   state that no file was written. The planning-record write is unaffected — it
+   goes to `planning_record.path`.
 7. **The cluster contains no existing page.** Write `none — no existing page
    in this cluster` in the Inherited Decisions table and `none` in the
    Re-verification Defects list. Both sections are still written.

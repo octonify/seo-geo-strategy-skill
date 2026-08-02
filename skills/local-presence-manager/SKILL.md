@@ -53,22 +53,26 @@ mid-run.
 | `project-config.yaml` → `local_presence.gbp_profile_name` | Identifies the one profile this run operates on |
 | `project-config.yaml` → `local_presence.canonical_nap.name`, `.address`, `.phone` | The declared canonical strings. Optional in the schema, **required for a complete run here** — absent is stop-and-ask gate 2, never a silent pick |
 | `project-config.yaml` → `local_presence.service_area_mode` | `storefront`, `service_area`, or `hybrid`. Decides the page pattern and whether the address is published at all |
+| `project-config.yaml` → `local_presence_extra.service_areas` | Optional. The localities a service-area business serves. Each becomes at most one Page Plan row. Absent means the operator names them at run time |
 | `project-config.yaml` → `constraints.excluded_topics`, `constraints.retired_services` | Optional. Gate any proposed service-area page before it is planned |
+| `project-config.yaml` → `outputs.local-presence-manager.path` | Optional. The directory the local presence record is written to. Absent means in-session only |
 | The `seo-geo-research` evidence pack, when one exists | Optional. Its GEO surfaces table only, and only the local-pack column. Read as evidence that a term is served locally — never as a demand figure |
 | Operator | The location, the GBP export or screenshots, and every directory check under `manual_paste` |
 | Observed surfaces | The live site's NAP-bearing pages, the Google Business Profile, and each directory listing |
 
-This Skill does not read `planning_record.*` and writes no planning row. It does
-not read `research_output.path` or `architecture_output.path`.
+This Skill does not read `planning_record.*` and writes no planning row. It reads
+no other Skill's key under `outputs` — those keys are never shared.
 
 **Writes.**
 
 - The local presence record, always, emitted in session.
-- Optionally, when the operator supplies an output directory at run time:
-  `<operator-supplied-dir>/<client.id>-local-presence-<YYYY-MM-DD>.md`
+- Optionally, when an output directory is available —
+  `outputs.local-presence-manager.path`, or a directory the operator supplies at
+  run time:
+  `<output-dir>/<client.id>-local-presence-<YYYY-MM-DD>.md`
 
-There is no config key for a local presence output directory and none is
-assumed. If the operator supplies no directory, the record is emitted in session
+`outputs.local-presence-manager.path` is this Skill's one output key. When it is
+absent and the operator supplies no directory, the record is emitted in session
 and the record says so. A path is never invented.
 
 **Done when.** Every item is checked by looking at the record, and the result of
@@ -263,8 +267,9 @@ Proceed, apply the default, and state the assumption in the record.
    alone.
 5. **`service_area_mode` is `hybrid`.** Produce both page patterns and state
    which locality each page owns. Do not collapse them to one pattern.
-6. **No output directory was supplied.** Emit the record in session and state
-   that no file was written.
+6. **No output directory was supplied.** `outputs.local-presence-manager.path`
+   is absent and the operator named no directory. Emit the record in session and
+   state that no file was written.
 7. **A GBP item cannot be seen in the material supplied** — hours cut off a
    screenshot, photos not exported. Record `Unknown — not checked` naming what
    was missing from the material. Do not infer the item from the rest of the
@@ -277,9 +282,12 @@ Proceed, apply the default, and state the assumption in the record.
    Keep the row, mark it `n/a — source does not serve <market>`, and state why.
    A source is never silently dropped from the table.
 10. **The location has no existing page.** Set the Page Plan disposition to
-    `create`. Plan one page per location and one per service area named by the
-    operator or config — and no more. A page is never invented to fill a
-    pattern.
+    `create`. Plan one page per location and one per service area named in
+    `local_presence_extra.service_areas` or by the operator at run time — and no
+    more. Where both are present, the two lists are merged and the record names
+    the origin of every locality. A page is never invented to fill a pattern,
+    and an absent `local_presence_extra.service_areas` is a question for the
+    operator, never an inferred list of nearby localities.
 11. **A `seo-geo-research` pack was not supplied.** Proceed. The pack is
     optional here and its absence changes no Done-when item. Do not run keyword
     research to produce one; that is a different unit and a different Skill.
@@ -306,9 +314,10 @@ past it.
 ### 1. Load configuration and fix the unit
 
 Read every key in `Reads`. State the one location in one sentence, including its
-`service_area_mode`. Gate any service the operator names for a service-area page
-against `constraints.retired_services` and `constraints.excluded_topics` before
-planning anything.
+`service_area_mode`. Gate every service-area locality — whether read from
+`local_presence_extra.service_areas` or named by the operator — against
+`constraints.retired_services` and `constraints.excluded_topics` before planning
+anything.
 
 *Output:* the Inputs table. *Labels:* `User-provided` for every config value.
 A missing required key stops the run and names the key.
