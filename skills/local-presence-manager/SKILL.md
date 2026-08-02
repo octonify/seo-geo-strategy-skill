@@ -13,7 +13,7 @@ description: >
   page ownership for the pages this Skill plans. Not for writing a business
   description, page copy, or any other language — that is the Skill named in
   `authority.authority_override_skill`.
-version: 1.0.0
+version: 1.0.1
 license: Proprietary
 unit: One business location
 authority_override: read at runtime from project-config.yaml key `authority.authority_override_skill`
@@ -80,7 +80,16 @@ every check is written into the record (step 9), pass or fail.
 
 1. The record's first line names the location and the run date, and the Inputs
    table lists every config key above with the value used or the word `missing`.
-   If any required key reads `missing`, Status is `stopped`.
+   If a required key reads `missing`, Status is `stopped` — **except a required
+   key whose absence has its own stop-and-ask gate, which that gate governs and
+   this item does not.** Today that is three keys:
+   `local_presence.canonical_nap` and its three fields, governed by gate 2,
+   whose third option produces an observation-only run reported `partial`;
+   `local_presence.gbp_profile_name`, governed by gate 6, whose second option
+   proceeds with every GBP row `missing — no profile found`; and
+   `local_presence.service_area_mode`, governed by gate 7, whose second option
+   proceeds on the observed state. Without this scope, item 1 forces `stopped`
+   and those options are unreachable.
 2. The Observed Sources table has one row per source in the check list, each
    with the surface, the date checked, how it was observed, and the exact
    strings read for name, address and phone — or `Unknown — not checked` in all
@@ -313,6 +322,9 @@ past it.
 
 ### 1. Load configuration and fix the unit
 
+*Inputs:* `project-config.yaml`, and the location the operator named. No step
+precedes this one.
+
 Read every key in `Reads`. State the one location in one sentence, including its
 `service_area_mode`. Gate every service-area locality — whether read from
 `local_presence_extra.service_areas` or named by the operator — against
@@ -323,6 +335,11 @@ anything.
 A missing required key stops the run and names the key.
 
 ### 2. Observe every source before comparing anything
+
+*Inputs:* `site.canonical_host` and `local_presence.gbp_profile_name` from
+step 1, the source list in `references/observation-label-map.md` §2, and
+whatever surfaces, exports or screenshots the operator supplies. **Not the
+canonical NAP** — this step runs before it.
 
 **This step runs before the canonical NAP is required, and it runs on every
 run.** What each source actually says is the evidence; the canonical is a
@@ -343,6 +360,9 @@ Never `Estimated` — a string was read or it was not.
 
 ### 3. Establish the canonical NAP record
 
+*Inputs:* `local_presence.canonical_nap` from step 1, and the Observed Sources
+table from step 2.
+
 Read `local_presence.canonical_nap`. Compare it to what step 2 observed, per
 [`references/canonical-nap-record.md`](references/canonical-nap-record.md) §§1–3.
 
@@ -357,6 +377,10 @@ label and its origin. *Labels:* `User-provided` where read from config;
 `Unknown — not agreed` on an observation-only run.
 
 ### 4. Build the variance and format-decision tables
+
+*Inputs:* the Observed Sources table from step 2, and the canonical NAP from
+step 3 — or, where none was agreed, the comparison base designated from step 2's
+first row.
 
 Compare every observed string against the canonical, character for character,
 per [`references/canonical-nap-record.md`](references/canonical-nap-record.md)
@@ -380,6 +404,9 @@ resolved quietly by preferring one.
 
 ### 5. Run the GBP checklist
 
+*Inputs:* the profile material observed at step 2, and the guideline read date
+in `references/gbp-checklist.md` §1.
+
 Item by item, per
 [`references/gbp-checklist.md`](references/gbp-checklist.md). Each item gets one
 of four statuses, a date, and how it was observed. The checklist items are
@@ -396,6 +423,9 @@ for an observed item; `Unknown — not checked` otherwise. Never `Estimated`.
 
 ### 6. Build the citation list with a status per source
 
+*Inputs:* the citation-source rows observed at step 2, and the tier list in
+`references/citation-sources.md` §2.
+
 Work the tier list in
 [`references/citation-sources.md`](references/citation-sources.md) §2 in order.
 Every source is a row, whether or not it was checked. Record the listing URL
@@ -410,6 +440,9 @@ listing observed, with URL and date; `Calculated` for the counts, naming the
 rows counted; `Unknown — not checked` for the rest.
 
 ### 7. Plan the location and service-area pages
+
+*Inputs:* `local_presence.service_area_mode`, the gated locality list and the
+location from step 1, and the canonical NAP from step 3.
 
 Per
 [`references/location-page-plan.md`](references/location-page-plan.md).
@@ -429,6 +462,9 @@ existing page could not be confirmed either way.
 
 ### 8. Write the remediation list
 
+*Inputs:* the findings produced by steps 4, 5, 6 and 7, and the source tiers
+from step 6.
+
 One row per finding: the target, the observed state, the recommended end state,
 and who performs it. Ordered by the tier of the source it affects, so the
 highest-weight surfaces are read first.
@@ -442,6 +478,8 @@ came from; no new label is created at this step.
 
 ### 9. Assemble the record and run the Done-when check
 
+*Inputs:* every output produced by steps 1–8.
+
 Fill
 [`references/local-presence-record-template.md`](references/local-presence-record-template.md)
 in full. Then write the Done-when check table with one row per item in
@@ -449,11 +487,16 @@ in full. Then write the Done-when check table with one row per item in
 `n/a — observation-only run`, with where to look. **Every run, all sixteen rows,
 whether they pass or not.**
 
-Then count the labelled values and confirm the evidence-basis totals match.
+Then count the labelled values, per the counting rule in
+[`../../references/skill-contract.md`](../../references/skill-contract.md) §5,
+and confirm the evidence-basis totals match. The rule is the contract's; this
+run does not define its own.
 
 *Output:* the completed record including its own check table.
 
 ### 10. Emit the handoff summary
+
+*Inputs:* the completed record from step 9.
 
 The fixed block below. `partial` and `stopped` are reported honestly.
 

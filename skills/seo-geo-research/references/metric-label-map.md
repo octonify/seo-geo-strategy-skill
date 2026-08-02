@@ -73,4 +73,6 @@ It never replaces the `Unknown` line, never appears without its inputs, and neve
 
 The handoff summary carries `Evidence basis: n Measured, n User-provided, n Calculated, n Estimated, n Unknown`.
 
-Count every labelled value in the pack, once each, under the label it carries. `Calculated` is counted as itself — it is one of the five labels in policy kernel §2 and gets its own count. The counts must sum to the number of labelled values in the pack — this is a `Done when` item and is checked by counting, not by judgement.
+Count every labelled value in the pack, once each, under the label it carries. **What counts as one labelled value is defined once, for all three Skills, in [`../../../references/skill-contract.md`](../../../references/skill-contract.md) §5.** Apply that rule; do not define a counting rule for this run, and do not state one beside the totals. Two operators applying two rules to the same pack both report `Pass` and mean different things.
+
+`Calculated` is counted as itself — it is one of the five labels in policy kernel §2 and gets its own count. The counts must sum to the number of labelled values in the pack — this is a `Done when` item and is checked by counting, not by judgement.

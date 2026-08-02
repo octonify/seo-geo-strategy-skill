@@ -12,7 +12,7 @@ description: >
   language — that is the Skill named in `authority.authority_override_skill`.
   Not for NAP, Google Business Profile, or citations — that is
   local-presence-manager.
-version: 1.0.0
+version: 1.0.1
 license: Proprietary
 unit: One cluster
 authority_override: read at runtime from project-config.yaml key `authority.authority_override_skill`
@@ -83,23 +83,37 @@ of every check is written into the record (step 13), pass or fail.
 
 1. The record's first line names the cluster and the run date, and the Inputs
    table lists every config key above with the value used or the word
-   `missing`. If any required key reads `missing`, Status is `stopped`.
+   `missing`. If a required key reads `missing`, Status is `stopped` — **except
+   a required key whose absence has its own stop-and-ask gate, which that gate
+   governs and this item does not.** Today that is exactly one key:
+   `planning_record.row_identifier_field`, governed by gate 2, whose third
+   option produces the record and the briefs with the write reported `stopped`
+   and the run reported `partial`. Without this scope, item 1 forces `stopped`
+   and gate 2 option 3 is unreachable.
 2. The Pack Provenance block names the pack's unit, its run date, and its
    Status, and lists every field this Skill needed that the pack does not
    carry — or the word `none`.
-3. The Inherited Decisions table has one row per page already existing in this
-   cluster, each with four cells filled: declared primary keyword, snapshot
-   date, snapshot source, and where the rejected alternatives are recorded.
-   Any cell without a value reads `Unknown — <reason>`. If no page exists, the
-   table reads `none — no existing page in this cluster`.
+3. The Inherited Decisions table has one row per **inherited decision** in this
+   cluster: one per page already existing, and one per planning row that
+   declares a primary keyword whether or not a page was ever built for it. Each
+   row has four cells filled: declared primary keyword, snapshot date, snapshot
+   source, and where the rejected alternatives are recorded, plus a cell naming
+   whether the row is an existing page or a planning declaration. Any cell
+   without a value reads `Unknown — <reason>`. If neither an existing page nor a
+   declaring planning row is present, the table reads `none — no existing page
+   and no planning row declaring a primary in this cluster`.
 4. The Re-verification Defects list is written every run. Every Inherited
    Decisions row carrying `Unknown` in its snapshot-date or snapshot-source
    cell appears in it, naming the page and what is missing. When no row
    qualifies, the list reads `none`.
 5. The Cluster Membership table has one row per candidate considered, each
    marked `member`, `held`, or `excluded`, each naming the overlap count that
-   decided it and the two SERP reads counted — or `Unknown — <which SERP was
-   not observed>`. No candidate from the pack is absent from this table.
+   decided it and the two SERP reads counted — or, where the count could not
+   decide it, `Unknown — <which SERP was not observed, or which was observed
+   partially and its captured position count>`. Both routes to `Unknown` are
+   named separately; an unobserved SERP and a partial one below the position
+   floor are different facts and the table says which occurred. No candidate
+   from the pack is absent from this table.
 6. The Cluster Demand line states an aggregate over the member terms whose
    demand is known, the count of member terms whose demand is `Unknown`, and
    the word `floor` where any member is `Unknown`. It never states a total
@@ -241,9 +255,13 @@ Proceed, apply the default, and state the assumption in the record.
    primary and cannot be overlap-tested. Mark it `held`, state which SERP was
    not observed, and carry it as a member candidate. Do not infer its SERP.
 3. **Overlap between two terms cannot be computed because a SERP was not
-   observed.** Do not split them into two pages. Hold the second term and mark
-   the pair `Unknown`. Creating a second page on unobserved evidence is the
-   cannibalization this Skill exists to prevent.
+   observed, or was observed only partially.** Do not split them into two pages.
+   Hold the second term and mark the pair `Unknown`, naming which read was
+   missing or short and by how much, per
+   [`references/cannibalization-guardrails.md`](references/cannibalization-guardrails.md) §2.1.
+   A partial read above the position floor may still send a pair to **one**
+   page; it may never send one to two. Creating a second page on unobserved
+   evidence is the cannibalization this Skill exists to prevent.
 4. **The member count falls outside the guidance range in
    [`references/cluster-architecture.md`](references/cluster-architecture.md) §2.**
    Proceed and state the count. The range is guidance, never a quota, and no
@@ -256,9 +274,13 @@ Proceed, apply the default, and state the assumption in the record.
    is absent and the operator named no directory. Emit the record in session and
    state that no file was written. The planning-record write is unaffected — it
    goes to `planning_record.path`.
-7. **The cluster contains no existing page.** Write `none — no existing page
-   in this cluster` in the Inherited Decisions table and `none` in the
-   Re-verification Defects list. Both sections are still written.
+7. **The cluster contains no existing page and no planning row that declares a
+   primary keyword.** Write `none — no existing page and no planning row
+   declaring a primary in this cluster` in the Inherited Decisions table and
+   `none` in the Re-verification Defects list. Both sections are still written.
+   A cluster with **no built page but planning rows that declare primaries** is
+   not this gate: those rows are inherited decisions and they get their rows
+   (step 2).
 8. **Anchor wording, a heading phrase, a title tag, or a CTA is requested.**
    Produce the structural decision — the link target, the heading level, the
    field and its constraint — and route the wording to the Skill named in
@@ -280,29 +302,48 @@ past it.
 
 ### 1. Load configuration and fix the unit
 
+*Inputs:* `project-config.yaml`, and the cluster the operator named. No step
+precedes this one.
+
 Read every key in `Reads`. Gate the cluster against the three `constraints`
 lists before any other work. State the cluster in one sentence.
 
 *Output:* the Inputs table. *Labels:* `User-provided` for every config value.
 A missing required key stops the run and names the key.
 
-### 2. Inventory existing pages and re-verify their decisions
+### 2. Inventory the cluster's inherited decisions and re-verify them
+
+*Inputs:* the cluster from step 1, the file at `planning_record.path`, and any
+page inventory the operator supplies. **Not the evidence pack** — this step runs
+without one.
 
 **This step runs before the evidence pack is required, and it runs on every
 run.** An existing cluster can be audited without a new pack, and what its
 pages can and cannot evidence is the first thing worth knowing about it.
 
-List every page already in this cluster, from the planning record and from any
-inventory the operator supplies. For each, record the primary keyword it
-declares, the date and source of the metric snapshot behind that choice, and
-where its rejected alternatives are recorded. Search for those artifacts before
-concluding they are absent; per
+**An inherited decision is a declared primary keyword, not a built page.** Two
+things go into this table:
+
+- every page already existing in this cluster; and
+- **every planning row that declares a primary keyword, whether or not a page
+  was ever built for it.** A row naming a target is a decision somebody made,
+  with or without a trail behind it, and this Skill is about to make decisions
+  on top of it. A green-field cluster whose planning rows already declare
+  primaries has inherited decisions, and treating it as empty hides them.
+
+The table names which kind each row is, so a reader can tell an audited page
+from an audited intention. Both are re-verified the same way, because the
+question is the same: what evidence stands behind the declared target.
+
+For each, record the primary keyword it declares, the date and source of the
+metric snapshot behind that choice, and where its rejected alternatives are
+recorded. Search for those artifacts before concluding they are absent; per
 [`references/primary-keyword-selection.md`](references/primary-keyword-selection.md) §5.
 
-**A page whose choice cannot be re-verified is a defect, not a blank cell.**
-Every row missing a snapshot date or a snapshot source is written into the
-Re-verification Defects list, naming the page and what is missing. The list is
-written whether or not it has entries.
+**A declaration whose choice cannot be re-verified is a defect, not a blank
+cell.** Every row missing a snapshot date or a snapshot source is written into
+the Re-verification Defects list, naming the page or the planning row and what
+is missing. The list is written whether or not it has entries.
 
 *Output:* the Inherited Decisions table and the Re-verification Defects list.
 *Labels:* `Measured` where a dated snapshot was found and read, `User-provided`
@@ -310,6 +351,9 @@ where the operator supplied it, `Unknown — <reason>` otherwise. Never
 `Estimated` — a snapshot either survived or it did not.
 
 ### 3. Ingest the evidence pack
+
+*Inputs:* the evidence pack the operator supplied, and the inventory from
+step 2.
 
 Confirm the document is a `seo-geo-research` pack: it names its unit and run
 date, and carries Candidates, SERP reads, Competitors, Coverage and gaps, and
@@ -328,17 +372,25 @@ keeps the label the pack gave it. A label is never upgraded in transit.
 
 ### 4. Group the candidates into the cluster
 
+*Inputs:* the pack's candidate list and its SERP read blocks, ingested at
+step 3, each with its observation state and captured position count.
+
 Apply the SERP-overlap test in
-[`references/cannibalization-guardrails.md`](references/cannibalization-guardrails.md) §2
+[`references/cannibalization-guardrails.md`](references/cannibalization-guardrails.md) §§2–2.1
 to every candidate in the pack. Terms whose observed top-ten results overlap at
 or above the stated threshold belong on one page; terms below it are separate
-pages. A pair with an unobserved SERP is `Unknown` and is not split.
+pages. A pair with an unobserved SERP is `Unknown` and is not split, and so is a
+pair whose reads fall short of the position floor.
 
-*Output:* the Cluster Membership table, plus the threshold stated as a
-sentence. *Labels:* `Calculated` for every overlap count, showing the two SERP
-reads counted; `Unknown` where a SERP was not observed.
+*Output:* the Cluster Membership table, plus the threshold **and the position
+floor** stated as a sentence. *Labels:* `Calculated` for every overlap count,
+showing the two SERP reads counted with their captured position counts;
+`Unknown` where a SERP was not observed or was observed partially below the
+floor.
 
 ### 5. Size the cluster's aggregate demand
+
+*Inputs:* the member terms from step 4, and their demand columns from the pack.
 
 Sum demand across member terms, per
 [`references/cluster-architecture.md`](references/cluster-architecture.md) §3.
@@ -351,6 +403,10 @@ labelled as such wherever it appears.
 values summed and their labels; plus the `Unknown` count stated separately.
 
 ### 6. Select the primary keyword
+
+*Inputs:* the member terms from step 4, the pack's per-candidate intent,
+findings, coverage segments, difficulty inputs and demand columns, and the
+inherited decisions from step 2.
 
 Apply the criteria in order, per
 [`references/primary-keyword-selection.md`](references/primary-keyword-selection.md)
@@ -367,6 +423,9 @@ gave it, with source, market and date preserved for `Measured` values.
 
 ### 7. Assign page roles and boundaries
 
+*Inputs:* the overlap grouping from step 4, the primary keyword from step 6,
+and the existing-page inventory from step 2.
+
 Name the pillar and every member. Give each page one boundary sentence stating
 what it covers and what it hands to a sibling, one owning primary term, and a
 disposition. Per
@@ -376,6 +435,9 @@ disposition. Per
 overlap grouping, `User-provided` for an operator-directed role.
 
 ### 8. Run the ownership check
+
+*Inputs:* the Cluster Map from step 7, the inventory from step 2, and the
+pack's own-site coverage rows from step 3.
 
 Build the Term Ownership table: one row per primary term, one owning page.
 Then run the three conflict checks in
@@ -387,6 +449,9 @@ against existing pages as well as new ones.
 derived from the map, `Unknown` where own-site coverage was never established.
 
 ### 9. Build the internal link map
+
+*Inputs:* the Cluster Map from step 7 and the existing URLs in the inventory
+from step 2.
 
 Per [`references/internal-link-map.md`](references/internal-link-map.md).
 Required links first, then evidenced cross-links. Every row names a source
@@ -402,6 +467,9 @@ that could not be confirmed — which is a defect, listed as one.
 
 ### 10. Decide the schema type per page
 
+*Inputs:* the Cluster Map from step 7, `site.cms` and `site.seo_plugin` from
+step 1, and the schema documentation as read this run.
+
 Per [`references/schema-decision.md`](references/schema-decision.md). Answer
 two separate questions for every type and never merge them: is it a documented
 Google rich-result feature, and does it help entity or answer-engine
@@ -412,6 +480,10 @@ documentation read, `Unknown` where it could not be read. Never `Estimated` —
 a feature is documented or it is not.
 
 ### 11. Produce the brief for every page to be written
+
+*Inputs:* the Cluster Map from step 7, the primary-keyword trail from step 6,
+the cluster demand line from step 5, the Link Map from step 9, and the Schema
+Decisions from step 10.
 
 Fill [`references/content-brief-template.md`](references/content-brief-template.md)
 for every page whose disposition is `create` or `extend`.
@@ -424,6 +496,10 @@ its label and its date.
 
 ### 12. Write the planning record
 
+*Inputs:* the Cluster Map from step 7, the briefs from step 11, and
+`planning_record.path`, `.owned_fields` and `.row_identifier_field` from
+step 1.
+
 Per [`references/planning-record-protocol.md`](references/planning-record-protocol.md).
 Identify each row by `planning_record.row_identifier_field`. Write only fields
 in `planning_record.owned_fields`. Stamp every write with the date and this
@@ -435,16 +511,23 @@ value and its new value.
 
 ### 13. Assemble the record and run the Done-when check
 
+*Inputs:* every output produced by steps 1–12.
+
 Fill [`references/cluster-record-template.md`](references/cluster-record-template.md)
 in full. Then write the Done-when check table with one row per item in
 `Skill Contract`, marked Pass or Fail with where to look — **every run, all
 sixteen rows, whether they pass or not.**
 
-Then count the labelled values and confirm the evidence-basis totals match.
+Then count the labelled values, per the counting rule in
+[`../../references/skill-contract.md`](../../references/skill-contract.md) §5,
+and confirm the evidence-basis totals match. The rule is the contract's; this
+run does not define its own.
 
 *Output:* the completed record including its own check table.
 
 ### 14. Emit the handoff summary
+
+*Inputs:* the completed record from step 13.
 
 The fixed block below. `partial` and `stopped` are reported honestly.
 

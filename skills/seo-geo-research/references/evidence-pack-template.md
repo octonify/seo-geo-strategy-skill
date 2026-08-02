@@ -1,6 +1,6 @@
 # Evidence Pack Template
 
-Owned by [`../SKILL.md`](../SKILL.md) step 11. `SKILL.md` `## Output` carries the compact skeleton; this file carries the full form, filled in literally.
+Owned by [`../SKILL.md`](../SKILL.md) step 12. `SKILL.md` `## Output` carries the compact skeleton; this file carries the full form, filled in literally.
 
 Placeholders in `<angle brackets>` are replaced. Everything else is written as shown. A section with nothing to report is kept and filled with `None observed` or `Unknown — <reason>`. Sections are never dropped for being empty.
 
@@ -61,11 +61,14 @@ Device: <desktop/mobile, or Unknown>
 
 ## SERP reads
 
-One block per candidate with an observed SERP. Candidates without one are
-listed at the end of this section as `Unknown — not observed`.
+One block per candidate whose SERP was observed or partially observed. Every
+block states its observation state. Candidates with no observation at all get no
+block and are listed at the end of this section as `Unknown — not observed`.
 
 ### <term>
 
+State: <observed — 10 of 10 positions captured / partial — <n> of 10 positions
+       captured, <cause where known>> — Measured
 Surface: <surface> · Locality: <locality> · Device: <device> · Date: <date>
 
 Features present: <ticked list>
@@ -95,6 +98,13 @@ Observed difficulty:
 
 Read: <one sentence describing the SERP. No "should", no "recommend",
        no ranking against another candidate.>
+
+Candidates with no observation: <list, each as "Unknown — not observed">
+Candidates observed partially: <list, each with its captured position count>
+
+The second list is carried into the pack because the overlap test in
+`content-strategy-architect` admits a partial read only above a stated position
+floor, and cannot apply that floor to a count the pack did not carry.
 
 ## Competitors
 

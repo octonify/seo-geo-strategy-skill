@@ -88,23 +88,40 @@ The rationale's last line is always the list of criteria that were `Unknown` for
 
 ## 5. Re-verifying an inherited decision
 
-Run for every page that already exists in the cluster, at `SKILL.md` step 2 — **before** the evidence pack is required, and on every run. This pass is the reason the Skill can be pointed at an existing cluster and say something useful about it, including when no pack exists for that cluster at all.
+Run at `SKILL.md` step 2 — **before** the evidence pack is required, and on every run. This pass is the reason the Skill can be pointed at an existing cluster and say something useful about it, including when no pack exists for that cluster at all.
 
-For each existing page, find four things:
+### What counts as an inherited decision
+
+Two kinds of thing, and both get a row:
+
+| Kind | What it is | Why it is inherited |
+|---|---|---|
+| An existing page | A page already built in this cluster, declaring a primary keyword | Somebody chose that target and the page is live on it |
+| **A planning row declaring a primary keyword** | A row in the planning record naming a target, **with no page built for it yet** | Somebody chose that target too. The absence of a page changes when the decision gets acted on, not whether it was made |
+
+**A planning row that declares a primary keyword is an inherited decision even when no page exists.** This is stated explicitly because the natural reading of "inherited" is "already built", and that reading makes a green-field cluster look decision-free when its planning rows have already named every target. Those rows are exactly the decisions this Skill is about to build on, and they are the ones least likely to carry a trail — nobody archives research for a page that was never written.
+
+The table names which kind each row is. An audited page and an audited intention are different findings, and a reader must be able to tell them apart without inferring it from the URL column.
+
+Where a planning row and a built page describe the same target, they are one row, marked as the page.
+
+For each, find four things:
 
 | What | Where to look | If not found |
 |---|---|---|
+| Whether it is a built page or a planning declaration | The inventory and the planning record | Not applicable — every row is one or the other |
 | The primary keyword it declares | The planning record's owned fields; the page's own stated target | `Unknown — no declared primary` |
 | The date the metrics behind it were read | The archived research alongside the page; a dated export; a dated snapshot in the record | `Unknown — no snapshot date` |
 | The source those metrics came from | The same | `Unknown — no snapshot source` |
 | Where its rejected alternatives are recorded | The archived research; the planning record | `Unknown — no rejected alternatives recorded` |
 
-**A page missing the snapshot date or the snapshot source is a defect and is named as one.** Not a gap, not a nice-to-have. Write it into the Re-verification Defects list with the consequence stated plainly:
+**A declaration missing the snapshot date or the snapshot source is a defect and is named as one.** Not a gap, not a nice-to-have. It is a defect whether the declaration sits behind a live page or only in a planning row. Write it into the Re-verification Defects list with the consequence stated plainly:
 
 ```
-| Page      | What is missing                    | Consequence                                              |
-|-----------|------------------------------------|----------------------------------------------------------|
-| <page>    | Snapshot date and snapshot source  | The primary-keyword choice cannot be re-verified. Whether it is still correct is Unknown, and re-deciding it would be a new decision, not a check. |
+| Page or row      | Kind                 | What is missing                    | Consequence                                              |
+|------------------|----------------------|------------------------------------|----------------------------------------------------------|
+| <page>           | existing page        | Snapshot date and snapshot source  | The primary-keyword choice cannot be re-verified. Whether it is still correct is Unknown, and re-deciding it would be a new decision, not a check. |
+| <planning row>   | planning declaration | Snapshot date and snapshot source  | The declared target has no trail. Building the page on it would inherit a decision nobody can review. |
 ```
 
 The list is written every run, including when it is empty, in which case it reads `none`. A defect list that only appears when there are defects is documentation, not enforcement (`references/skill-contract.md` §4).

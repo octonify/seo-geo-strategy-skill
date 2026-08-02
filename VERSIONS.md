@@ -8,6 +8,55 @@ Installed copies in consuming projects are byte-identical to a tag and are never
 
 ---
 
+## v1.0.1 — 2026-08-02
+
+All three Skills carry `version: 1.0.1` in frontmatter.
+
+**Reason for the release.** The first production run of the bundle — `seo-geo-research` into `content-strategy-architect`, against a real cluster in a consuming project — **found four faults, three of which were contradictions or gaps that forced the operator to interpret rather than follow.** A step that required output from a step that had not run yet. A `Done when` item that made one of its own gate's options unreachable. An input state that no rule on either side of the handoff defined. And an enforced count with no definition, which the run had to define for itself before it could report `Pass`.
+
+None of the four blocked the run. Every one of them was survivable only because a careful operator interpreted the Skill and said so. That is precisely the failure mode `Done when` exists to prevent, so it is a release reason.
+
+Run report: `docs/run-reports/2026-08-02-v1.0.1.md`. Decisions: D52 (the specification), D55–D58 (the calls made carrying it out).
+
+### The contract change
+
+`references/skill-contract.md` §3 now requires that **each procedure step names its inputs, and no step may name an output produced by a later step** — checkable from the `SKILL.md` alone.
+
+This is the third sequencing fault the bundle has shipped: one in each Skill (D29, D42, D52), and all three found by execution rather than by any of the conformance passes that read them. Three for three is a pattern, not coincidence. The check now fires at authoring time.
+
+Applied as a full pass across all three Skills: one fault found, the one D52 named. Every step in all three now declares its inputs — 37 steps — which is what makes the ordering check mechanical rather than a re-reading of prose.
+
+### What changed
+
+| Fault | Where | What was done |
+|---|---|---|
+| **F2** — step 5 required step 6's output | `seo-geo-research` | Intent classification split in two: step 5 is Pass A from the query, step 6 reads the SERPs, step 7 is Pass B from those reads. Steps renumbered 1–13, and every cross-reference in the Skill and its six reference files re-checked (D55) |
+| **F3** — partial SERP observation undefined on both sides | `serp-read-protocol.md` §2, `cannibalization-guardrails.md` §2.1 | `partial` is now a first-class observation state carrying its captured position count. The overlap rule gains a position floor of 8 of the top ten: below it a pair is `Unknown` and never split, and above it a partial read can send a pair to one page but never to two (D56). `Done when` items 7 and 8 in research and item 5 in architecture admit the third state |
+| **F5** — an enforced count with no definition | `references/skill-contract.md` §5 | The evidence-basis counting rule is defined once, for all three Skills, with its edge cases named. The Skills are told not to define their own (D57) |
+| **F6** — `Done when` item 1 made gate 2 option 3 unreachable | `content-strategy-architect`, and `local-presence-manager` | Item 1 is scoped to required keys whose absence does not have its own gate. The same contradiction existed three times over in `local-presence-manager` and was fixed there too (D58) |
+| **F1** — gate 3 read as being about the channel | `seo-geo-research` | Reworded: "…but the named tool cannot actually be read: not connected, not authenticated, or not reachable" |
+| **F4** — "existing page" vs "planning row" ambiguous | `content-strategy-architect` step 2, `primary-keyword-selection.md` §5 | A planning row declaring a primary keyword is an inherited decision **even when no page exists**, stated explicitly. The Inherited Decisions table names which kind each row is. The first run found three undocumented decisions this way on a green-field cluster |
+
+**Deferred, unchanged:** F7 (per-member selection trails — a template improvement with a working alternative in place) and F10 (no staleness threshold on the schema snapshot — needs a real second read before a threshold can be chosen honestly). Review checking stays deferred to v1.1 (D44, D48).
+
+### Declared limitations
+
+Carried forward from v1.0.0 and still standing:
+
+| Skill | What is still not validated |
+|---|---|
+| `seo-geo-research` | The tool-fed path. The D10 validation pack's universe was 53 observed terms against a 204-term export, and the first production run was zero-tool by operator direction at gate 3 — so every demand metric was `Unknown` and sources 2, 6 and 7 have still not run against real data |
+| `local-presence-manager` | The profile side of the NAP comparison is not a live read. No profile export, dashboard screenshot, or reachable public listing was available; the profile string came from the project's own dated record of it. This Skill was not exercised by the first production run |
+
+**Closed since v1.0.0:** `content-strategy-architect`'s pack-consuming path. The first production run exercised primary-keyword selection from a real pack, the cluster map, the link map, the schema table and three briefs. D51's condition is met.
+
+New with this release, and honest about it:
+
+- **The planning-record write has still never run.** Gate 2 stopped it by design in the first production run, and the record it produced lists the fifteen intended cell-writes. It needs a consuming project with a stable row-identifier column before it is exercised.
+- **The partial-observation machinery is written, not exercised.** F3's rules — the `partial` state, the captured position count, the position floor of 8 — were derived from a run that had to improvise past their absence. No run has yet followed them.
+
+---
+
 ## v1.0.0 — 2026-08-02
 
 First release. All three Skills carry `version: 1.0.0` in frontmatter (`docs/decisions.md` D19).

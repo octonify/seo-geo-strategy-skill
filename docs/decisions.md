@@ -752,3 +752,65 @@ Without this note, every future install verification re-derives the same scare.
 
 **Reverses if.** An authenticated session is established and renderer stability is demonstrated across a full run.
 
+---
+
+## D55 — The anti-sequencing check, and integer renumbering rather than 5a/5b — 2026-08-02
+
+**Decision.** `references/skill-contract.md` §3 gains the rule D52 specified: each procedure step names its inputs, and no step may name an output produced by a later step. Applying it, `seo-geo-research`'s procedure is renumbered **1–13 with plain integers**, not 1–12 with a split 5a/5b.
+
+**Why integers.** D52 describes the fix as "5a (Pass A) and 5b (Pass B)", and the two halves land either side of the SERP reads. Keeping those labels literally would have put the procedure in the order 5a, 6, 5b, 7 — and the new rule is stated in terms of *later*, which that ordering makes ambiguous exactly where the check needs to be sharp. A rule that says "no step names a later step's output" needs a procedure whose step numbers and whose execution order are the same sequence. So Pass A is step 5, the SERP reads are step 6, Pass B is step 7, and everything below shifts by one.
+
+The split D52 asked for is the substance and it is intact: two steps, separated by the reads, each naming its own inputs and its own labels. Only the labels differ from D52's shorthand.
+
+**The second half of the rule cost more than the first.** "Each step names its inputs" means every step in all three Skills gained an `*Inputs:*` line — 37 steps. That is the part that makes the check mechanical: with inputs declared, verifying the ordering is reading two lines per step, and it no longer depends on inferring what a step needs from its prose.
+
+**What the full pass found.** One fault, the one D52 already named. `content-strategy-architect` and `local-presence-manager` both pass; every step's inputs resolve to step 1's config, the operator's material, an observed surface, or a lower-numbered step's output. Recorded because "we checked and found nothing" is only worth anything if it was written down at the time.
+
+**Reverses if.** Nothing foreseeable.
+
+---
+
+## D56 — The overlap test's position floor is 8 of the top ten — 2026-08-02
+
+**Decision.** In `cannibalization-guardrails.md` §2.1, a `partial` SERP read below **8 of the top ten captured** cannot decide an overlap pair; the pair is `Unknown` and is not split. Above the floor the count is used, and the record carries both captured counts.
+
+**Why 8, and why a floor rather than a formula.** The threshold of 4 shared URLs was set against a ten-result surface. Counting shared URLs across a four-position capture is not a stricter reading of that rule — it is the same numerator over a different denominator, and it quietly makes the convention mean something it was never set to mean. The floor is the point where the captured slice is still close enough to ten that the convention applies to it. At 8 or more per side, at most two positions per side are unseen, so the observed shared count understates the true one by at most two — a bound small enough to quote. Below 8 there is no bound worth quoting: a four-position capture leaves six unseen and says nothing about whether the pair crosses 4.
+
+**The asymmetry is the operative part.** Unseen positions can only *raise* a shared count. So:
+
+- a count already **≥ 4** on reads at or above the floor is safe — it cannot fall back under the threshold, and the pair goes to **one page**;
+- a count **≤ 3** on any read short of a full ten is **`Unknown`**, not a split — the unseen positions could carry it over.
+
+A partial read can therefore send a pair to one page and can never send it to two. That is the same direction §2 already fixed for an unobserved SERP, for the same reason: a wrong split is live and hard to unwind; a wrong hold costs a page that was not built yet.
+
+**Considered and rejected.** A per-pair formula — permit the split only when `observed shared + min(unseen either side) ≤ 3` — is more precise and is what the arithmetic actually implies. It was rejected because D52 asked for a stated count, because a rule an operator has to evaluate per pair is a rule that gets approximated, and because the asymmetry above already delivers the formula's protection in the only direction that matters.
+
+**Reverses if.** A real run shows the floor holding pairs that a full read would have split, often enough to matter — which the record can show, because every `Unknown` row names which read fell short and by how much.
+
+---
+
+## D57 — The evidence-basis counting rule belongs to the contract, once — 2026-08-02
+
+**Decision.** `references/skill-contract.md` §5 defines what one labelled value is, for all three Skills. One labelled value is one occurrence of one of the five label words at a position where it labels a value; the inclusion and exclusion lists are in that section. `metric-label-map.md` §4 and `observation-label-map.md` §4 now point at it instead of restating the requirement without a definition.
+
+**Why here and not per Skill.** F5's finding is not that the first run's counting rule was wrong — it was reasonable, it was scripted, and the run stated it beside the counts, which is more than the contract asked for. The finding is that stating it was *necessary*, and that a second operator would have stated a different one and also passed. A `Done when` item that reports `Pass` under two incompatible definitions is not enforcement; it is enforcement-shaped.
+
+**The rule names its own edge cases on purpose.** A row with a `Label` cell and two `Unknown — <reason>` value cells counts three, not one and not two. An empty `Label` cell counts nothing and is a defect in the row. `Unknown` counts like the other four. Those three sentences are where two honest operators would otherwise diverge, and a rule that leaves its divergence points implicit has not fixed anything.
+
+The Skills are now told not to state a counting rule beside their totals. Stating one invites it to disagree with this one.
+
+**Reverses if.** A deliverable shape appears that the inclusion list cannot classify. Then the list gains a row here, not a local rule there.
+
+---
+
+## D58 — `local-presence-manager` gets F6's fix too — 2026-08-02
+
+**Decision.** The `Done when` item 1 scoping that D52 specified for `content-strategy-architect` is applied to `local-presence-manager` as well. `seo-geo-research` is left alone.
+
+**Why.** F6 is a contradiction between "any required key missing means `stopped`" and a gate whose own option produces something other than `stopped`. `local-presence-manager` has the same contradiction three times over: gate 2 option 3 produces an observation-only run reported `partial` when `local_presence.canonical_nap` is absent; gate 6 option 2 proceeds with every GBP row `missing — no profile found`; gate 7 option 2 proceeds on the observed state. All three keys are required, and under the unscoped item 1 all three options are unreachable.
+
+D50's standing rule governs: a follow-up naming files names the ones known to need the change, and a file left asserting something a just-approved decision has made false is a defect rather than scope discipline. F6 was found in one Skill because that is the Skill the first run exercised, not because it is the only one that has it.
+
+`seo-geo-research` is untouched because it has no such key: its gate 1 option 3 stops, which is what item 2 already says. Adding a clause with nothing to point at would be noise.
+
+**Reverses if.** Nothing foreseeable.

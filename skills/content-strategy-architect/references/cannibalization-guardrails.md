@@ -22,11 +22,35 @@ For two candidate terms, count how many URLs appear in **both** observed top ten
 
 | Shared URLs in the two top tens | Verdict | Meaning |
 |---|---|---|
-| ≥ 4 | **One page** | The engine is returning substantially the same set for both. Two pages would compete |
-| ≤ 3 | **Two pages** | The engine distinguishes the queries. Two pages can each own one |
-| Either SERP not observed | **`Unknown` — one page for now** | Not splittable on absent evidence. See below |
+| ≥ 4, on reads that between them captured enough to count | **One page** | The engine is returning substantially the same set for both. Two pages would compete |
+| ≤ 3, both SERPs `observed` in full | **Two pages** | The engine distinguishes the queries. Two pages can each own one |
+| Either SERP `partial` below the position floor of **8 of the top ten** | **`Unknown` — one page for now** | Too little of the result set is visible for either verdict to be a reading of the top ten. See §2.1 |
+| Either SERP `not observed` | **`Unknown` — one page for now** | Not splittable on absent evidence. See below |
 
 **The threshold is 4 of the top ten, and the record states it as a sentence every run.** Published practice puts the useful band at roughly 3–6 shared URLs, with 4 the common middle; the figure is a convention, not a measurement, so it is stated openly rather than applied invisibly. An operator who wants a stricter or looser cluster changes the number and the record shows which number was used.
+
+### 2.1 Partial reads and the position floor
+
+A `partial` SERP read (`../../seo-geo-research/references/serp-read-protocol.md` §2) captured some positions and not others, and states its captured count. It is neither an observation nor an absence, and the rule above would silently have treated it as one or the other.
+
+**The position floor is 8 of the top ten, on each side.** Below it, the pair is `Unknown` and is not split, whatever the observed count says.
+
+Why 8, and why a floor at all:
+
+- **The threshold of 4 was set against a ten-result surface.** Counting shared URLs across a four-position capture is not a stricter reading of the same rule; it is the same numerator over a different denominator, and it makes the convention mean something it was never set to mean. The floor is where the captured slice is still close enough to the ten that the 4-of-10 convention applies to it.
+- **Above the floor, the residual is bounded and small.** At 8 or more captured on each side, at most two positions per side are unseen, so the observed shared count understates the true one by at most two. That bound is what makes the count usable at all, and the record carries both captured counts so a reader can see it.
+- **Below the floor there is no bound worth quoting.** A four-position capture leaves six unseen; a shared count drawn from it carries no information about whether the pair crosses 4.
+
+Two consequences, and they are asymmetric on purpose:
+
+| Situation | Verdict | Why |
+|---|---|---|
+| Shared count **≥ 4** on reads at or above the floor | **One page** | Unseen positions can only raise a shared count. A pair already at or over the threshold cannot fall back under it, so the one-page verdict is safe on a partial read |
+| Shared count **≤ 3** and either read is short of a full ten | **`Unknown` — one page for now** | The unseen positions could carry the pair over the threshold. Splitting here would authorise a second page on evidence that does not exist |
+
+So a partial read can send a pair to one page and can never send it to two. That is the same conservative direction as an unobserved SERP, for the same reason: a wrong split is live and hard to unwind, and a wrong hold costs a page that was not built yet.
+
+The record states the floor as a sentence every run, beside the threshold, and every `Unknown` row names which read fell short and by how much.
 
 ### Why an unobserved pair defaults to one page
 
@@ -34,21 +58,28 @@ The conservative direction is not obvious, so it is fixed here rather than decid
 
 Splitting creates a second page. If the split was wrong, two pages now compete and the damage is live and hard to unwind. Not splitting leaves one page and a held term; if that was wrong, the cost is a page that was not built yet, and building it later costs nothing that was not already going to be spent.
 
-So: **absent evidence never authorises a new page.** The pair is marked `Unknown`, the second term is `held`, and the record names which SERP was missing. Continue-silently gate 3.
+So: **absent evidence never authorises a new page.** The pair is marked `Unknown`, the second term is `held`, and the record names which SERP was missing. Continue-silently gate 3. A read that is short rather than missing is the same argument with a smaller gap, which is why §2.1 sends it the same way.
 
 ### Recording it
 
 ```
 Overlap threshold: two terms share one page when their observed top tens have
-4 or more URLs in common; 3 or fewer means separate pages; an unobserved SERP
-on either side means the pair is Unknown and is not split.
+4 or more URLs in common; 3 or fewer means separate pages. Position floor: a
+read capturing fewer than 8 of the top ten cannot decide the pair, and a count
+of 3 or fewer decides nothing unless both reads captured all ten. An unobserved
+SERP on either side means the pair is Unknown and is not split.
 
-| Candidate | Overlap count | SERPs counted            | Verdict  | Label      |
-|-----------|---------------|--------------------------|----------|------------|
-| <term-b>  | 6             | <term-a>, <term-b>       | member   | Calculated |
-| <term-c>  | 1             | <term-a>, <term-c>       | member   | Calculated |
-| <term-d>  | —             | <term-d> not observed    | held     | Unknown    |
+| Candidate | Overlap count | SERPs counted                      | Verdict  | Label      |
+|-----------|---------------|------------------------------------|----------|------------|
+| <term-b>  | 6             | <term-a> 10/10, <term-b> 10/10     | member   | Calculated |
+| <term-c>  | 1             | <term-a> 10/10, <term-c> 10/10     | member   | Calculated |
+| <term-d>  | —             | <term-d> not observed              | held     | Unknown    |
+| <term-e>  | 5             | <term-a> 10/10, <term-e> 8/10      | member   | Calculated |
+| <term-f>  | 2             | <term-a> 10/10, <term-f> 9/10      | held     | Unknown    |
+| <term-g>  | —             | <term-g> partial, 4/10 — below the position floor | held | Unknown |
 ```
+
+Rows `<term-e>` through `<term-g>` are the partial cases. `<term-e>` is above the floor and already over the threshold, so the verdict holds. `<term-f>` is above the floor but under the threshold on an incomplete read, so it is `Unknown` rather than a split. `<term-g>` is below the floor and decides nothing.
 
 Every count is `Calculated` and names the two reads it counted. A count with no named reads is not evidence.
 

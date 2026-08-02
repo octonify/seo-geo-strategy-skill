@@ -60,7 +60,13 @@ Two headed lists, per policy kernel §4:
 
 ### `## Procedure`
 
-Numbered steps. Each step states its output. Steps that produce a labelled metric state which evidence labels are acceptable for that step.
+Numbered steps. Each step states its **inputs** and its **output**. Steps that produce a labelled metric state which evidence labels are acceptable for that step.
+
+**No step may name an output produced by a later step.** A step's inputs are the config keys read at step 1, the operator's material, an observed surface, or the output of a step with a lower number. Naming anything else makes the step impossible to follow at the point it is asked for, and the run either stops or silently reorders itself.
+
+This is checkable from the `SKILL.md` alone: read the `Procedure` top to bottom, and for every step ask which earlier step or which declared input produces each thing it names. A step naming something no earlier step produced is a defect in the Skill, and it is fixed by splitting the step or by renumbering — never by leaving the executing agent to work out the real order.
+
+Three of these shipped undetected — one in each Skill (`docs/decisions.md` D29, D42, D52) — and all three were found by execution rather than by reading. The check is written here so it fires at authoring time instead.
 
 ### `## Output`
 
@@ -108,6 +114,35 @@ Every run ends with this block. Fixed shape, so a downstream Skill or a later se
 ```
 
 `Status: partial` is a legitimate, non-embarrassing outcome. Reporting a partial result honestly is always preferred over filling a gap with an estimate.
+
+### The evidence-basis counting rule
+
+Every Skill's `Done when` list requires the evidence-basis totals to equal the count of labelled values in the deliverable. **This is the definition of one labelled value, and it is the same for all three Skills.** Without one fixed rule, two operators produce two different counts from the same deliverable and both report `Pass` — an enforced check with no definition is worse than no check, because it reads as enforcement.
+
+**One labelled value is one occurrence of one of the five label words — `Measured`, `User-provided`, `Calculated`, `Estimated`, `Unknown` — at a position where it labels a value.** Occurrences are counted, not rows and not distinct labels.
+
+An occurrence counts when it appears in:
+
+- a `Label` cell, or an equivalently-headed cell, of a filled table row — one count for that row;
+- a value cell, where the label is written beside the value it labels (`120 — Measured`, `Unknown — tool reports 0 for <locality>`) — one count per such cell;
+- a line of prose or a list item that states the label for one named value (`Cluster demand (local): floor 340 across 5 of 9 members — Calculated`).
+
+An occurrence does **not** count when it appears in:
+
+- a section heading, a column heading, or a sentence stating a rule about labels;
+- rule text, guidance, or an explanation of what a label means;
+- the handoff summary block itself, including the evidence-basis line;
+- the `Done when` check table;
+- a quoted template, skeleton, or worked example carried into the deliverable.
+
+Consequences worth stating, because they are where two operators would otherwise diverge:
+
+- A table row with a `Label` cell reading `Measured` and two value cells reading `Unknown — <reason>` counts **three**: one for the row's label cell, one for each labelled value cell.
+- A row whose `Label` cell is empty counts nothing, and is a defect in the row rather than a zero.
+- `Unknown` is counted exactly like the other four. It is a label, not the absence of one.
+- The count is over the deliverable as emitted — the pack or the record — and not over the session, the working notes, or anything the deliverable does not contain.
+
+The rule is deliberately mechanical: a second operator counting the same file reaches the same five numbers, and where the deliverable is a file the count is reproducible by searching it. A Skill that states its own counting rule beside the totals is stating something this contract has already decided, and the two can then disagree.
 
 ---
 

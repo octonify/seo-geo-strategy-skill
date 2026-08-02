@@ -51,22 +51,30 @@ Each is a finding about the pack, not a metric produced here.
 
 ## Inherited decisions
 
-One row per page already existing in this cluster. If none exists, this table
-reads `none — no existing page in this cluster`.
+One row per inherited decision: every page already existing in this cluster, and
+every planning row that declares a primary keyword whether or not a page was
+built for it. If neither is present, this table reads `none — no existing page
+and no planning row declaring a primary in this cluster`.
 
-| Existing page | Declared primary | Snapshot date | Snapshot source | Rejected alternatives recorded at | Label |
-|---|---|---|---|---|---|
-| <page> | <term or Unknown — reason> | <date or Unknown — reason> | <source or Unknown — reason> | <where or Unknown — reason> | <label> |
+| Page or planning row | Kind | Declared primary | Snapshot date | Snapshot source | Rejected alternatives recorded at | Label |
+|---|---|---|---|---|---|---|
+| <page> | existing page | <term or Unknown — reason> | <date or Unknown — reason> | <source or Unknown — reason> | <where or Unknown — reason> | <label> |
+| <row> | planning declaration | <term or Unknown — reason> | <date or Unknown — reason> | <source or Unknown — reason> | <where or Unknown — reason> | <label> |
+
+A planning row declaring a primary keyword is an inherited decision even when no
+page exists (`primary-keyword-selection.md` §5). A green-field cluster whose rows
+already name targets has inherited decisions, and they are the ones least likely
+to carry a trail.
 
 ## Re-verification defects
 
 Written every run. Every Inherited-decisions row carrying `Unknown` in its
-snapshot-date or snapshot-source cell appears here. When none qualifies, this
-section reads `none`.
+snapshot-date or snapshot-source cell appears here, of either kind. When none
+qualifies, this section reads `none`.
 
-| Page | What is missing | Consequence |
-|---|---|---|
-| <page> | <what> | <what cannot now be established, stated plainly> |
+| Page or planning row | Kind | What is missing | Consequence |
+|---|---|---|---|
+| <page or row> | <existing page / planning declaration> | <what> | <what cannot now be established, stated plainly> |
 
 What would resolve each: <a fresh seo-geo-research run on that page's topic,
 or the named artifact that would carry the snapshot>
@@ -74,10 +82,13 @@ or the named artifact that would carry the snapshot>
 ## Cluster membership
 
 Overlap threshold: <the rule, stated as a sentence>
+Position floor: <the floor, stated as a sentence — a read below it cannot decide
+the pair, and a count at or under the threshold decides nothing unless both
+reads captured all ten>
 
-| Candidate | Overlap count | SERPs counted | Verdict | Label |
+| Candidate | Overlap count | SERPs counted, with captured positions | Verdict | Label |
 |---|---|---|---|---|
-| <term> | <n or —> | <the two reads, or which was not observed> | member / held / excluded | Calculated / Unknown |
+| <term> | <n or —> | <the two reads with their n/10 counts, or which was not observed, or which was partial and by how much> | member / held / excluded | Calculated / Unknown |
 
 Candidates in the pack: <n> · members: <n> · held: <n> · excluded: <n>
 
@@ -213,7 +224,9 @@ Overall: <complete / partial / stopped>
 
 **The Done-when check table is written every run, in full, pass or fail.** Sixteen rows appear whether sixteen pass or four do. A checklist that is only written when the agent remembers to write it is documentation, not enforcement (`references/skill-contract.md` §4).
 
-**The Re-verification defects section is written even when it is empty.** It is the section that makes an existing cluster's undocumented decisions visible, and a section that only appears when it has content cannot be relied on to appear.
+**The Re-verification defects section is written even when it is empty.** It is the section that makes a cluster's undocumented decisions visible — built pages and declared-but-unbuilt planning rows alike — and a section that only appears when it has content cannot be relied on to appear.
+
+**The evidence-basis counts use the contract's counting rule.** `references/skill-contract.md` §5 defines what one labelled value is, once, for all three Skills. Do not define a rule for this run and do not state one beside the totals.
 
 **A label is never upgraded in transit.** A value the pack labelled `Estimated` is `Estimated` here. A value the pack labelled `Unknown` stays `Unknown`; this Skill has no way to resolve it and no licence to produce it (`docs/decisions.md` D11 gives the metrics to the research Skill, and that boundary holds in both directions).
 

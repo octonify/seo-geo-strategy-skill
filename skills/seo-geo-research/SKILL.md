@@ -9,7 +9,7 @@ description: >
   Not for choosing a primary keyword, designing a pillar and cluster map,
   deciding schema, or writing a brief: that is content-strategy-architect,
   which consumes this pack and makes those decisions with an evidence trail.
-version: 1.0.0
+version: 1.0.1
 license: Proprietary
 unit: One service or topic area
 authority_override: read at runtime from project-config.yaml key `authority.authority_override_skill`
@@ -65,7 +65,7 @@ and the pack says so. A path is never invented, and another Skill's key under
 `outputs` is never borrowed.
 
 **Done when.** Every item is checked by looking at the pack, and the result of
-every check is written into the pack (step 11), pass or fail.
+every check is written into the pack (step 12), pass or fail.
 
 1. The pack's first line names the unit and the run date.
 2. The Inputs table lists every config key above, each with the value used or
@@ -79,12 +79,20 @@ every check is written into the pack (step 11), pass or fail.
    the same row.
 6. Every `Measured` value in the pack carries its source, its market or
    locality, and its observation date.
-7. There is one SERP read block per candidate whose SERP was observed, and
-   every candidate without one is listed by name under `Unknown — not observed`.
-8. Every SERP read block contains all four of: the ten-feature checklist with
-   each feature marked present, absent, or not checked; a top-ten table; a
-   result-type mix line; and the six named findings each marked fired or not
-   fired.
+7. Every candidate is in exactly one of three observation states, and the pack
+   says which: `observed` — a SERP read block with all ten positions captured;
+   `partial` — a SERP read block whose state line reads
+   `partial — <n> of 10 positions captured`; or `not observed` — listed by name
+   under `Unknown — not observed` with no block. No candidate is in two states
+   and none is in none.
+8. Every SERP read block marked `observed` contains all four of: the ten-feature
+   checklist with each feature marked present, absent, or not checked; a top-ten
+   table; a result-type mix line; and the six named findings each marked fired
+   or not fired. Every block marked `partial` carries the same four fields, with
+   the captured positions present, every field the incomplete read could not
+   reach marked `Unknown — not captured`, and the captured position count stated
+   in the block's state line. A `partial` block is a complete record of an
+   incomplete read, never a shortened one.
 9. The Competitors table has a row for every domain observed in at least one
    SERP read, each with its appearance count and the SERPs named — and a row
    for every operator-named rival, including those with zero appearances.
@@ -145,10 +153,14 @@ Halt and present the numbered options. Never guess past one of these.
 2. **The request names two or more services or topic areas.**
    (1) Name the single unit to run now. (2) Run this Skill once per unit, in
    sequence, starting with a named one. (3) Stop.
-3. **`access_mode` is `browser_agent` or `api` but no such access is connected.**
+3. **`access_mode` is `browser_agent` or `api` but the named tool cannot
+   actually be read: not connected, not authenticated, or not reachable.** The
+   channel working is not the test. A browser that drives fine but reaches a
+   logged-out page, an API that returns an auth error, and a tool that is simply
+   unreachable are all this gate.
    (1) Switch this run to `manual_paste` and paste the artifacts.
-   (2) Connect the access and re-run. (3) Proceed zero-tool, with every demand
-   metric `Unknown`.
+   (2) Connect or authenticate the access and re-run. (3) Proceed zero-tool,
+   with every demand metric `Unknown`.
 4. **The unit falls inside `constraints.excluded_topics`.**
    (1) Confirm the exclusion and stop. (2) Name a different, in-scope unit.
    (3) Escalate to whoever owns the exclusion list. Never proceed silently.
@@ -186,6 +198,13 @@ Proceed, apply the default, and state the assumption in the pack.
    was written.
 8. **A candidate's SERP could not be observed.** Mark it
    `Unknown — not observed`. Do not infer composition.
+9. **A candidate's SERP was observed but the read is incomplete** — fewer than
+   ten positions captured, a feature the surface would not render, a capture
+   that failed part way. Record the read as `partial`, state the captured
+   position count, mark every field the read could not reach
+   `Unknown — not captured`, and carry it. A partial read is evidence about the
+   positions it captured and about no others. Do not discard it, do not present
+   it as a complete read, and do not infer the positions that were not captured.
 
 A condition on neither list is a gap in this Skill. Report it; do not improvise
 past it.
@@ -196,6 +215,9 @@ past it.
 
 ### 1. Load configuration and fix the unit
 
+*Inputs:* `project-config.yaml`, and the unit the operator named. No step
+precedes this one.
+
 Read every key in `Reads`. Gate the unit against the three `constraints` lists
 before any other work. State the unit in one sentence.
 
@@ -203,6 +225,10 @@ before any other work. State the unit in one sentence.
 A missing required key stops the run and names the key.
 
 ### 2. Build the keyword universe
+
+*Inputs:* the unit and the config values from step 1 — `access_mode`,
+`research_tools.available`, `market.language` — plus the operator's seed terms
+and whatever surfaces the access mode permits.
 
 Run every source that `access_mode` and `research_tools.available` permit, per
 [`references/keyword-universe-sources.md`](references/keyword-universe-sources.md).
@@ -215,6 +241,8 @@ model-generated variant. An `Estimated` term carries no demand evidence.
 
 ### 3. Screen to a candidate set
 
+*Inputs:* the universe table from step 2, and the unit from step 1.
+
 State the screening rule as a sentence before applying it — relevance to the
 unit, and nothing else at this stage. Screening on volume here would discard
 terms before their demand is known.
@@ -223,6 +251,9 @@ terms before their demand is known.
 discarded. *Labels:* carried unchanged from step 2.
 
 ### 4. Attach demand metrics
+
+*Inputs:* the candidate list from step 3, the locality and dataset from step 1,
+and whatever tool or operator-pasted figures the access mode provides.
 
 For every candidate, read local metrics at `market.primary_locality` and
 national metrics at `market.national_dataset`. Both, always, on the same row.
@@ -234,28 +265,55 @@ with tool, market and date; `User-provided`; `Calculated` with inputs shown;
 or `Unknown` with a reason. Never `Estimated` for a volume, never `0` for
 absent data.
 
-### 5. Classify intent twice
+### 5. Classify intent — Pass A, from the query
 
-Pass A from the query pattern, Pass B from the observed SERP, per
-[`references/intent-classification.md`](references/intent-classification.md).
-Attach a sub-intent, marked as an addition to the four-class scheme. Where the
-two passes disagree, the SERP read is authoritative and both are recorded.
+*Inputs:* the candidate list from step 3. Nothing else. Pass A is a pattern
+read of the query string and needs no observation.
 
-*Output:* two intent columns and a disagreement flag. *Labels:* Pass A is
-`Estimated`, always. Pass B is `Measured` or `Unknown` — never `Estimated`.
+Classify every candidate from its query pattern, per
+[`references/intent-classification.md`](references/intent-classification.md) §2.
+Attach a sub-intent, marked as an addition to the four-class scheme.
+
+**Pass B is step 7, not this step.** It is classified from an observed SERP,
+and no SERP has been observed yet.
+
+*Output:* the Pass A intent column, with sub-intent. *Labels:* `Estimated`,
+always. A pattern read is model inference and is never `Measured`.
 
 ### 6. Read the SERPs
 
+*Inputs:* the candidate list from step 3, and the locality and dataset from
+step 1.
+
 Per [`references/serp-read-protocol.md`](references/serp-read-protocol.md).
 Capture composition, the ten-feature checklist, the top ten with result types,
-and run all six findings checks. Harvest the PAA questions and AI Overview
-citations back into the universe.
+and run all six findings checks. Record each read's observation state —
+`observed`, `partial` with its captured position count, or `not observed` —
+per that file §2. Harvest the PAA questions and AI Overview citations back into
+the universe.
 
-*Output:* one SERP read block per observed candidate; a named list of
-candidates with no observation. *Labels:* `Measured` or `Unknown` only. SERP
-composition is never `Estimated` — either it was observed or it was not.
+*Output:* one SERP read block per candidate whose SERP was observed or
+partially observed, each carrying its state line; a named list of candidates
+with no observation. *Labels:* `Measured` or `Unknown` only. SERP composition is
+never `Estimated` — either it was observed or it was not.
 
-### 7. Read observed difficulty
+### 7. Classify intent — Pass B, from the observed SERP
+
+*Inputs:* the SERP read blocks from step 6, and the Pass A column from step 5.
+
+Classify every candidate whose SERP was observed, from that SERP, per
+[`references/intent-classification.md`](references/intent-classification.md) §3.
+A candidate with no observed SERP is `Unknown`; it is never inferred. Where the
+two passes disagree, the SERP read is authoritative and both are recorded, per
+that file §4.
+
+*Output:* the Pass B intent column and the disagreement flag, beside the Pass A
+column from step 5. *Labels:* `Measured` or `Unknown` — never `Estimated`.
+
+### 8. Read observed difficulty
+
+*Inputs:* the SERP read blocks from step 6, and the tool difficulty column from
+step 4.
 
 Per [`references/serp-read-protocol.md`](references/serp-read-protocol.md) §6.
 Each input stated separately with its own label, the tool difficulty score
@@ -266,7 +324,10 @@ single number.
 describing the SERP and nothing else. *Labels:* `Measured`, `Calculated` with
 inputs shown, or `Unknown`.
 
-### 8. Map the competitor set
+### 9. Map the competitor set
+
+*Inputs:* the SERP read blocks from step 6, `site.canonical_host` from step 1,
+and any rivals the operator named.
 
 Derive it from SERP appearances, not from assertion, per
 [`references/competitor-and-gap-mapping.md`](references/competitor-and-gap-mapping.md)
@@ -278,7 +339,10 @@ may be zero.
 `User-provided` for operator-named rivals, `Unknown` where a field could not be
 established.
 
-### 9. Map coverage and gaps
+### 10. Map coverage and gaps
+
+*Inputs:* the SERP read blocks and the harvested PAA questions from step 6, the
+Competitors table from step 9, and `site.canonical_host` from step 1.
 
 Segment every candidate as Held, Contested, Uncovered, Open, or Unknown, per
 [`references/competitor-and-gap-mapping.md`](references/competitor-and-gap-mapping.md)
@@ -290,7 +354,10 @@ unanswered questions with observed demand. *Labels:* `Measured` for coverage
 observations, `Calculated` for segments derived from absence, `Unknown` where
 own-site coverage was never established.
 
-### 10. Read the GEO surfaces
+### 11. Read the GEO surfaces
+
+*Inputs:* the SERP read blocks from step 6, in particular their feature
+checklists and AI Overview citation lists.
 
 For every observed SERP, record whether an AI Overview was present, which
 sources it cited, and which of PAA, video carousel and local pack were present.
@@ -299,18 +366,25 @@ A local-pack-dominant result is recorded and flagged for
 
 *Output:* the GEO surfaces table. *Labels:* `Measured` or `Unknown` only.
 
-### 11. Assemble the pack and run the Done-when check
+### 12. Assemble the pack and run the Done-when check
+
+*Inputs:* every output produced by steps 1–11.
 
 Fill [`references/evidence-pack-template.md`](references/evidence-pack-template.md)
 in full. Then write the Done-when check table with one row per item in
 `Skill Contract`, marked Pass or Fail with where to look — **every run, all
 twelve rows, whether they pass or not.**
 
-Then count the labelled values and confirm the evidence-basis totals match.
+Then count the labelled values, per the counting rule in
+[`../../references/skill-contract.md`](../../references/skill-contract.md) §5,
+and confirm the evidence-basis totals match. The rule is the contract's; this
+run does not define its own.
 
 *Output:* the completed pack including its own check table.
 
-### 12. Emit the handoff summary
+### 13. Emit the handoff summary
+
+*Inputs:* the completed pack from step 12.
 
 The fixed block below. `partial` and `stopped` are reported honestly.
 

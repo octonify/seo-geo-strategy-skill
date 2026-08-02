@@ -1,6 +1,8 @@
 # Intent Classification
 
-Owned by [`../SKILL.md`](../SKILL.md) step 5. Every candidate is classified **twice** and both classifications survive into the pack.
+Owned by [`../SKILL.md`](../SKILL.md) steps 5 and 7. Every candidate is classified **twice** and both classifications survive into the pack.
+
+**The two passes are two steps, and they are separated by the SERP reads.** Pass A (§2) is step 5 and runs from the query alone. Pass B (§3) is step 7 and runs from the SERP blocks step 6 produced. They were one step until v1.0.1, which asked for Pass B before any SERP had been observed (`docs/decisions.md` D52).
 
 ---
 

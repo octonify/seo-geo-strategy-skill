@@ -103,7 +103,7 @@ the scope-expansion rule in `docs/architecture.md` §5.
 | Questions and answers, messaging | Live interaction on an external surface. Policy kernel §1 |
 | Performance insights, views, calls, direction requests | Post-publication measurement. `docs/architecture.md` §6 |
 | Whether the profile is "optimised" as a score | No composite score appears anywhere in this bundle. `docs/decisions.md` D12 and D25 |
-| Competitor profiles | A competitor's profile is not this unit. Competitor mapping from observed SERPs is `seo-geo-research`'s step 8 |
+| Competitor profiles | A competitor's profile is not this unit. Competitor mapping from observed SERPs is `seo-geo-research`'s step 9 |
 
 ## 5. What a completed checklist is worth
 

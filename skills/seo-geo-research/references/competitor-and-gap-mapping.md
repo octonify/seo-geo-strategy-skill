@@ -1,6 +1,6 @@
 # Competitor And Gap Mapping
 
-Owned by [`../SKILL.md`](../SKILL.md) steps 8 and 9.
+Owned by [`../SKILL.md`](../SKILL.md) steps 9 and 10.
 
 ---
 

@@ -87,6 +87,10 @@ The handoff summary carries
 `Evidence basis: n Measured, n User-provided, n Calculated, n Estimated, n Unknown`.
 
 Count every labelled value in the record, once each, under the label it carries.
+**What counts as one labelled value is defined once, for all three Skills, in
+[`../../../references/skill-contract.md`](../../../references/skill-contract.md) §5.**
+Apply that rule; do not define a counting rule for this run.
+
 `Calculated` is counted as itself. On a well-formed run of this Skill the
 `Estimated` count is `0`; a non-zero count is a defect, not a variation, and
 `Done when` item 16 surfaces it by requiring the counts to match the record.
