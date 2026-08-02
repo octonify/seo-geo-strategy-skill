@@ -263,3 +263,35 @@ Every candidate file read before the accept/reject call. Apache-2.0 source; **no
 | 11 `references/analysis-templates.md`, `example-report.md` | **Reject** | Templates for the rejected output shape |
 
 **Note on the source's own strengths.** Three things in the source set are better than a first reading suggests and were adopted deliberately: the insistence that every claim cite a specific number, the explicit treatment of retrieved content as untrusted, and the "generic vs actionable" contrast that makes a quality bar checkable. All three are already present in this bundle's shared layer, independently arrived at.
+
+---
+
+## D21 — Confirm D16, with the boundary tightened — 2026-08-03
+
+**Decision.** A Search Console query export is admitted as a discovery source. The line against the `architecture.md` §6 exclusion is drawn at the **operation**, not the data source.
+
+Permitted: a one-time read of which queries already produce impressions, used as `Measured` demand evidence at a point in time.
+
+Forbidden, and this is what §6 excludes: retaining exports for period-over-period comparison, analysing position change, any "was 12, now 8" framing, or any scheduled re-read. A Skill that finds itself comparing two exports has left this bundle's scope.
+
+**Why.** The exclusion in §6 targets ongoing position monitoring — a different lifecycle, a different cadence, and a different consumer. One-time demand discovery is neither. Practically, first-party impression data is the only `Measured` demand signal available to a project with no paid tool; removing it would leave the zero-tool path with no measured demand at all, and §6 was never intended to have that effect.
+
+**Reverses if.** A consuming project acquires a rank-tracking capability whose owner should hold this data instead.
+
+---
+
+## D22 — Add `research_output.path` to the schema as optional — 2026-08-03
+
+**Decision.** Approve the D18 proposal. `project-config.schema.yaml` gains an optional `research_output.path`. Coordinating-agent authority; D18 correctly declined to self-authorise a shared-layer edit.
+
+**Why.** Not a scope expansion. The Skills already write a file when given a destination; this only removes a run-time question. Optional, so the in-session default and the never-invent-a-path rule are unchanged.
+
+---
+
+## D23 — `Calculated` added to the handoff evidence-basis line — 2026-08-03
+
+**Decision.** `skill-contract.md` §5 now enumerates all five labels. The local convention of folding `Calculated` under its weakest input label is withdrawn.
+
+**Why.** A defect in the shared layer, introduced when it was authored: the policy kernel defines five evidence labels and the handoff block enumerated four. Three Skills would each have invented a local workaround for the same inconsistency. Fixed once, centrally.
+
+**Consequence.** `seo-geo-research` should drop its folding convention and count `Calculated` directly. Carried as a follow-up.

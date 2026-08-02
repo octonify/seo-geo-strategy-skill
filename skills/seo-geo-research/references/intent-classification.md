@@ -8,7 +8,7 @@ Owned by [`../SKILL.md`](../SKILL.md) step 5. Every candidate is classified **tw
 
 A pattern read and a tool label both classify the query. The live SERP shows what the search engine has actually decided the query means. These disagree often enough that recording only one of them destroys evidence.
 
-The classic case is a head term contaminated by a brand entity. `gut health doctor` reads as informational from its signal words and returns an informational class from a national tool. Set the locality to a specific city and the same tool reports the intent as navigational, because a strong brand entity owns the term. Nothing about the phrase changed. What changed is which surface was read.
+The classic case is a head term contaminated by a brand entity. Take a `<topic> specialist` phrase: it reads as informational from its signal words, and a national tool returns an informational class for it. Set the locality to a specific city and the same tool reports navigational, because a strong brand entity owns the term in that market. Nothing about the phrase changed. What changed is which surface was read.
 
 So: classify from the query, classify from the SERP, keep both, and record the disagreement as a finding rather than resolving it silently.
 
@@ -70,7 +70,7 @@ Write the disagreement as its own row, never as a resolved single value:
 
 ```
 Intent (query read): Informational · Definitional — Estimated
-Intent (SERP read):  Navigational — Measured, Google, Kirkland WA, 2026-07-15
+Intent (SERP read):  Navigational — Measured, Google, <locality>, <YYYY-MM-DD>
                      — position 1 brand entity with sitelinks, brand also at position 5
 Disagreement:        Yes. SERP read is authoritative. Head term is brand-contaminated.
 ```

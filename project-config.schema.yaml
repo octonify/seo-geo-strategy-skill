@@ -97,6 +97,14 @@ required:
 
 optional:
 
+  research_output:
+    path:
+      type: string
+      description: >
+        Directory for evidence packs and candidate exports. When absent, a
+        Skill emits its pack in session and says so; it never invents a path.
+      example: content-production/01_sources/research
+
   local_presence:
     gbp_profile_name:
       type: string

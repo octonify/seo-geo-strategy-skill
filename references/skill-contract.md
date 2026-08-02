@@ -101,7 +101,7 @@ Every run ends with this block. Fixed shape, so a downstream Skill or a later se
 - **Unit:** <what was operated on>
 - **Status:** complete | partial | stopped
 - **Produced:** <artifact paths or record identifiers>
-- **Evidence basis:** <n Measured, n User-provided, n Estimated, n Unknown>
+- **Evidence basis:** <n Measured, n User-provided, n Calculated, n Estimated, n Unknown>
 - **Assumptions:** <each assumption made without asking, or "none">
 - **Open questions:** <each unresolved item, or "none">
 - **Recommended next:** <one skill name, or "return to operator">
