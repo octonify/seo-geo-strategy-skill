@@ -115,3 +115,151 @@ The negative case is instructive: a sibling project's planning database mixed on
 | `local-presence-manager` | Client NAP state | Independently finds the known site-vs-profile address mismatch |
 
 **Why.** A Skill that only works on the example in its own documentation has not been tested. Each case has a known correct answer that the Skill was not shown.
+
+---
+
+## D11 — Research produces evidence and names no target — 2026-08-03
+
+**Decision.** `seo-geo-research` outputs a labelled evidence pack. It selects nothing, ranks nothing, and sequences nothing. `Done when` item 11 enforces this mechanically: the pack may contain no column headed `Priority`, `Score`, `Tier`, `Rank`, or `Quick win`, and no section headed `Recommendation`, `Primary keyword`, `Cluster`, `Content calendar`, or `Next steps`.
+
+**What we take.** The reference system's separation of a survey phase from a decision phase (D1, already settled).
+
+**What we reject, having read it.** The reference `keyword-research` Skill's delivery sections — Executive Summary, Quick Wins / Growth / GEO opportunities, Topic Clusters, Content Calendar, Next Steps — and its `Opportunity = (Volume × Intent Value) / Difficulty` formula with intent values 1/1/2/3.
+
+**Why reject.** Both name a target from inside the research Skill. The reference system's research Skill recommends what to write, which collapses `architecture.md` §2's boundary: research is done when every candidate carries labelled metrics; architecture is done when every page has an owner and a boundary. A Skill that does both has neither completion criterion.
+
+**Reverses if.** A consuming project runs research without ever running architecture, making the evidence pack a dead end in practice.
+
+---
+
+## D12 — Reject every composite priority score — 2026-08-03
+
+**Decision.** No weighted composite score appears anywhere in this Skill. Difficulty is read as a set of separately-labelled inputs (`serp-read-protocol.md` §6), never as one number of our own construction.
+
+**What we reject, having read it.** Four scoring models from packages 06, 07 and 11: the Priority Score matrix (volume 20% / difficulty 25% / relevance 30% / intent 15% / trend 10%, bucketed P0–P3); the Opportunity Score; the Impact × Confidence lens with BOFU/MOFU/TOFU tagging; and the Gap Priority Score with its Quick Win arithmetic.
+
+**Why reject.** Two independent reasons, either sufficient.
+
+First, a composite cannot carry an honest evidence label. Its inputs are a mix of `Measured`, `Estimated` and `Unknown`. Policy kernel §2 forbids presenting an estimate as measured, and a single number derived from that mix has no label that is true of it. Worse, `Unknown` inputs must be given *some* value for the arithmetic to complete — which is exactly the "`Unknown` silently becomes zero or a default" failure the kernel names.
+
+Second, a score exists to rank candidates against each other, and ranking candidates is the decision D11 places in `content-strategy-architect`.
+
+**What we keep instead.** Every input stated separately with its own label, plus one sentence describing what the inputs jointly show about the SERP. A reader can build any weighting they want; they cannot be handed one silently.
+
+**Reverses if.** Architecture proves unable to decide without a pre-computed rank, across more than one real case.
+
+---
+
+## D13 — SERP composition is `Measured` or `Unknown`, never `Estimated` — 2026-08-03
+
+**Decision.** A SERP was observed or it was not. A model's expectation of what a SERP probably contains is not evidence about what it contains, and this Skill has no label for it.
+
+This is **stricter than policy kernel §2**, which permits `Estimated` for model inference generally. It narrows the permitted set for one class of metric; it adds no label and contradicts nothing.
+
+**Why.** The observed-difficulty read is built on top of composition. An inferred composition would silently become an inferred difficulty, and a downstream Skill reading the pack would have no way to tell the difference. The same argument does not apply to a volume, where the tool name and date make the provenance visible in the value itself.
+
+**This is an addition, not codified past practice.** The archived Gut Health research recorded SERP screenshots as evidence but had no rule preventing an unobserved SERP from being described. Flagged per the D9 pattern so it is not mistaken for precedent.
+
+**External validation.** Search, 2026-08-03: current guidance treats tool difficulty scores as estimates that vary substantially between tools and holds that manual SERP inspection is required to catch what a score misses — a high-difficulty query whose top ten is thin, outdated, or directory-filled. That is an argument for observation over inference, which is what this rule makes non-optional.
+
+---
+
+## D14 — A tool-reported zero is `Unknown`, never a demand figure — 2026-08-03
+
+**Decision.** When a keyword tool reports local volume as `0`, the pack records `Unknown — tool reports 0 for <locality>` and carries the national figure on the same row. Both lines always appear together. `Done when` item 5 enforces it: no volume cell may contain `0`.
+
+A population-ratio figure (`national × locality population ÷ dataset population`) is permitted only as `Calculated`, only with both population inputs themselves labelled, and never in place of the `Unknown` line.
+
+**Why.** A tool reporting zero for a locality is reporting that it has no data for that locality, not that nobody searches the term. Policy kernel §2 already forbids `Unknown` silently becoming zero; this decision names the specific mechanism by which it was happening.
+
+**Evidence from the validation case.** The archived Gut Health keyword list holds 204 rows, of which 58 carry a blank volume and 8 carry `0`. Among them, `naturopathic doctor for gut health` is recorded as volume `0`, difficulty `0`, intent blank — and was rejected for "insufficient demand". Its locality-set SERP is populated, carries a local pack, and returns three comparable local providers in its top three. Zero data and zero demand were treated as the same fact.
+
+**External validation.** Search, 2026-08-03: geo-modified queries in smaller markets routinely return zero from tools that carry real national volume for the same phrase, because the tool lacks per-city coverage rather than because demand is absent. The population-ratio derivation is the commonly-cited workaround, and is treated in that guidance as an estimate — which is why it is admitted here only as a labelled `Calculated` value beside the `Unknown`, not instead of it.
+
+---
+
+## D15 — Intent is classified twice, and the SERP wins — 2026-08-03
+
+**Decision.** Every candidate carries two intent classifications: Pass A from the query pattern (`Estimated`, always) and Pass B from the observed SERP (`Measured` or `Unknown`, never `Estimated`). Where they disagree, Pass B is authoritative and **both are kept**, with the disagreement recorded as a finding.
+
+**Why the disagreement is kept rather than resolved.** Directly from `skill-contract.md` §4's corollary: validating an output against an authority that can itself be wrong is not validation, and where a check compares two records, the file must state which wins. A tool's intent label is a model's opinion about a query; the SERP is the engine's decision about it. Recording only the winner destroys the finding.
+
+**Evidence from the validation case.** `gut health doctor` returns intent `Informational` at the US dataset and `Navigational` at Kirkland, WA — the same string, the same tool, the same day. The cause is visible only in the SERP: one brand entity whose name is the query holds positions 1 (with sitelinks), 2 (its Instagram profile) and 3. A single-value intent column would have recorded one of those two labels and lost the reason for both.
+
+**Sub-intent is an addition, flagged.** The four-class scheme is too coarse to imply a page format. A seven-value sub-intent layer (definitional, instructional, diagnostic, comparative, reassurance, provider-seeking, access) is attached and marked as an addition wherever it appears. **External validation.** Search, 2026-08-03: current guidance holds that the traditional four-intent classification is no longer granular enough and that narrower sub-intents each call for a different content format, with SERP-feature presence the most reliable secondary signal for refining the classification.
+
+**Boundary.** Sub-intent names a format. It never names the wording. What a reassurance-intent query should be answered *with* is decided by the Skill in `authority.authority_override_skill`.
+
+---
+
+## D16 — Search Console query mining is a discovery source, not rank tracking — 2026-08-03
+
+**Decision.** `seo-geo-research` may read a Search Console query export once, for the current run, as discovery source 2. It records position as an observed value at the export date. It does not establish a cadence, compare against a prior run, or report movement.
+
+**Why this needed deciding.** `architecture.md` §6 excludes rank tracking and performance monitoring from the bundle, and a query export contains positions. The distinction drawn here is between *demand discovery* — which terms this site already receives impressions for, read once — and *position monitoring over time*, which is a separate lifecycle with a separate cadence and is the thing §6 excludes. First-party impression data is the only `Measured` demand source available to a project with no paid tool, and excluding it would have made the zero-tool path materially weaker for no gain.
+
+**Boundary made explicit.** `keyword-universe-sources.md` §1 states the rule in the reference itself, and states that a request for movement is a different request on which this Skill stops rather than widening.
+
+**Flagged for the coordinating agent.** This is a boundary interpretation, not a scope expansion, but it is close enough to the §6 line to be worth confirming rather than assuming.
+
+---
+
+## D17 — Research reads and writes no planning record — 2026-08-03
+
+**Decision.** `seo-geo-research` does not read `planning_record.path`, `planning_record.owned_fields`, or `planning_record.row_identifier_field`, and writes no planning row.
+
+**Why.** Policy kernel §6 governs writes into a consuming project's records and requires, among other things, that a target row be identifiable unambiguously. A research pack has no row to identify — the planning row belongs to a *page*, and a page does not exist until architecture decides one should. Giving research write access to the planning database would recreate exactly the failure D2 was drawn to avoid: two lifecycles sharing one record with no write rule.
+
+**Consequence.** The evidence pack is the entire handoff. Architecture reads it and writes the planning row.
+
+---
+
+## D18 — No config key for the research output path; the operator supplies it — 2026-08-03
+
+**Decision.** The pack is always emitted in session. A file is written only to a directory the operator supplies at run time, as `<dir>/<client.id>-<topic-slug>-keyword-evidence-<YYYY-MM-DD>.md`. No directory is assumed and no path is invented.
+
+**Why.** `project-config.schema.yaml` defines no key for a research output directory, and that file is shared-layer foundation this task was not authorised to edit. Inventing a path would violate `skill-contract.md` §6; adding a required key would edit the foundation; making it a *required* runtime input would block a Skill that has a perfectly good in-session output.
+
+**Recorded as a proposal, not implemented.** An optional `research_output.path` key would remove the run-time question. It is not added here. See the run report for 2026-08-03.
+
+---
+
+## D19 — Skill files carry `version: 0.0.0-unreleased` until the first tag — 2026-08-03
+
+**Decision.** Every `SKILL.md` in this bundle carries `version: 0.0.0-unreleased` in frontmatter until a release is cut.
+
+**Why.** `skill-contract.md` §2 requires a bundle version in frontmatter and §8 requires that all Skills share one. No tag exists: `VERSIONS.md` states that none will be cut until all three Skills pass their D10 validation case. Writing `1.0.0` into a file that is not in a 1.0.0 release would make the field a claim rather than a fact, and installed copies are supposed to be byte-identical to a tag.
+
+**Consequence.** Cutting the first release is a mechanical find-and-replace across three files, plus the `VERSIONS.md` entry with its stated reason.
+
+---
+
+## D20 — Source package cherry-pick ledger, packages 06–11 — 2026-08-03
+
+Every candidate file read before the accept/reject call. Apache-2.0 source; **no text reproduced from any of them**, per D1.
+
+| Package / file | Verdict | Basis |
+|---|---|---|
+| 06 `keyword-research/SKILL.md` | **Reject** as a whole | Recommends targets from inside research — see D11 |
+| 06 `references/instructions-detail.md` — 8-phase workflow | Partial accept | Phase *sequence* (scope → discover → expand → classify → cluster) is sound; the score and deliver phases are rejected per D11/D12 |
+| 06 `references/instructions-detail.md` — modifier patterns | **Accept**, rewritten | Useful phrasing generator. Re-authored around provider-and-place patterns, which the source's SaaS-shaped list omits and a local service unit needs most |
+| 06 `references/keyword-intent-taxonomy.md` — four-class matrix | **Accept**, rewritten and extended | Sound core; extended with the sub-intent layer and the dual-pass rule per D15 |
+| 06 `references/keyword-intent-taxonomy.md` — funnel mapping with conversion-rate bands | **Reject** | Quotes conversion percentages per funnel stage with no source. Inventing a metric is forbidden by policy kernel §2 |
+| 06 `references/topic-cluster-templates.md` | **Reject** for this Skill | Cluster design is `content-strategy-architect`'s unit |
+| 06 `references/example-report.md` | **Reject** | Worked example of the rejected delivery format |
+| 07 `keyword-prioritization-framework.md` | **Reject** | Composite scoring — see D12 |
+| 07 `gap-analysis-frameworks.md` — segment map (only you / shared / only them / no one) | **Accept**, rewritten | Genuinely useful. Re-authored as Held / Contested / Uncovered / Open / Unknown, each bound to an observed ranking URL and each carrying its own label |
+| 07 `gap-analysis-frameworks.md` — Opportunity Score, Quick Win arithmetic, calendar integration | **Reject** | Composite scoring and sequencing — D11, D12 |
+| 08 `serp-analysis/SKILL.md` | Partial accept | The step order (composition → top pages → patterns → features → intent → difficulty) is sound and is the basis of `serp-read-protocol.md`. The single 0–100 difficulty output is rejected per D12 |
+| 08 `references/serp-feature-taxonomy.md` | **Accept** as a checklist source, rewritten | The feature inventory is comprehensive and worth having as a ten-item check. Its optimisation advice ("win by structure", "citation drivers") is rejected — that is implementation and language, owned elsewhere |
+| 08/09 `references/analysis-templates.md` — capture fields | **Accept**, rewritten | Position / URL / domain / authority / freshness / links is the right per-result capture set. Extended with the result-type taxonomy, which is the field carrying the signal a difficulty number cannot |
+| 09 True Difficulty — weighted 0–100 (authority 25%, page links 20%, content bar 20%, backlinks 20%, stability 15%) | **Reject** | The most considered scoring model in the source set, and still rejected: it produces one unlabellable number from mixed-quality inputs — D12. Its five *input categories* are accepted as separately-labelled rows |
+| 09 Site-stage fit (new / growing / established) | **Reject** | A recommendation about who should target the term |
+| 10 `competitor-analysis/SKILL.md` — decision gates | **Accept** as a pattern | The stop-and-ask / continue-silently split with a stated default is the shape used here. Its content is re-derived for this unit |
+| 10 `competitor-analysis` — backlink profile, technical SEO, Core Web Vitals steps | **Reject** | Explicitly out of scope, `architecture.md` §6 |
+| 10 `references/analysis-templates.md` — competitor profile fields | **Accept**, rewritten | Re-authored around observed SERP appearances rather than asserted rivalry, and stripped of the qualitative "strengths / weaknesses" columns, which are judgements |
+| 10 `references/battlecard-template.md`, `positioning-frameworks.md` | **Reject** — not read past their purpose | Sales positioning artifacts, no consumer in this workflow |
+| 11 `content-gap-analysis/SKILL.md` | Partial accept | Gap-must-name-the-competitor is the right rule and is tightened here to gap-must-name-the-URL. Prioritisation and calendar output rejected per D11 |
+| 11 `references/analysis-templates.md`, `example-report.md` | **Reject** | Templates for the rejected output shape |
+
+**Note on the source's own strengths.** Three things in the source set are better than a first reading suggests and were adopted deliberately: the insistence that every claim cite a specific number, the explicit treatment of retrieved content as untrusted, and the "generic vs actionable" contrast that makes a quality bar checkable. All three are already present in this bundle's shared layer, independently arrived at.
