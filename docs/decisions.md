@@ -463,3 +463,161 @@ Every candidate file read before the accept/reject call. Apache-2.0 source; **no
 **Decision.** Approve the D33 proposal. `project-config.schema.yaml` gains an optional `architecture_output.path`, separate from `research_output.path`. Coordinating-agent authority; D33 correctly declined to self-authorise a shared-layer edit.
 
 **Why.** Same shape as D22 and not a scope expansion — the Skill already writes a record when given a destination. Keeping the two keys separate is deliberate: a cluster architecture record is not research output, and quietly widening an existing key's meaning is worse than adding one.
+
+---
+
+## D36 â€” Source package cherry-pick ledger, package 28 â€” 2026-08-02
+
+Every candidate file read before the accept/reject call. Apache-2.0 source; **no text reproduced from any of them**, per D1.
+
+| Package / file | Verdict | Basis |
+|---|---|---|
+| 28 `protocol/entity-registry/SKILL.md` | **Reject** in full | Settled in D4 and re-confirmed rather than re-opened. Nothing was imported, adapted, or rebuilt in a lighter form. See the note below |
+| 28 `entity-registry/references/entity-signal-checklist.md` | **Reject** â€” not read past its purpose | Belongs to the rejected component |
+| 28 `entity-registry/references/example-audit-report.md` | **Reject** â€” not read past its purpose | Worked example of the rejected component's output |
+| 28 `page-play-builder/references/local.md` â€” the canonical NAP record | **Accept**, rewritten and extended | The concept is exactly right and is the spine of this Skill. Extended with the format-decision list, the three-class difference taxonomy, and the rule that the comparison runs without a canonical (D42) |
+| 28 `local.md` â€” the play sequence | **Accept** as an order, re-derived | Confirm inputs â†’ set canonical â†’ audit listings â†’ optimise profile â†’ build citations â†’ plan pages â†’ review is a sound order and is the basis of steps 1â€“8. Re-sequenced so observation precedes the canonical decision (D42) |
+| 28 `local.md` â€” the GBP checklist | **Accept**, rewritten and extended | Five items in the source; thirteen here, each with an explicit four-value status vocabulary and a stated condition per value. The source's items are states worth checking; what it does not carry is a way to check them the same way twice |
+| 28 `local.md` â€” "description with primary keyword in the first ~100 of 750 characters" | **Reject** | Wording, and an unsourced threshold. See D39 and D40 |
+| 28 `local.md` â€” citation priority tiers | **Accept**, rewritten and extended | The tier ordering is sound. Extended with data aggregators, which the source omits entirely, and with the requirement that a source stays in the table even when it does not serve the market |
+| 28 `local.md` â€” "prefer targeted precision over mass submission" | **Accept** as a direction, without a number | The direction survives external validation. Every figure attached to it in current guidance does not â€” D40 |
+| 28 `local.md` â€” location and service-area page patterns | **Accept**, rewritten | Storefront versus service-area, and the no-boilerplate rule, are both correct and both externally confirmed. Re-authored around one locality per page and around what the plan may and may not decide (D41) |
+| 28 `local.md` â€” "run the programmatic mode's Locations playbook alongside" | **Reject** | Generating location pages from a dataset is scaled page production. Out of scope, and the thing the duplication constraint exists to prevent |
+| 28 `local.md` â€” handoff to an on-page checker | **Reject** | On-page auditing is excluded by `architecture.md` Â§6. The handoff here is to `content-strategy-architect` |
+| 28 `local.md` â€” the untrusted-input rule | **Accept**, already present | Independently arrived at in this bundle's shared layer. Carried in `citation-sources.md` Â§4 for the directory-reading case specifically |
+| 28 `serp-analysis/references/serp-feature-taxonomy.md` | **Reject** for this Skill | Already accepted for `seo-geo-research` in D20. A second copy in a second Skill is drift |
+
+**On the entity-registry rejection, having read D4 again and worked the unit.** The rejection holds, and the run found a positive reason for it rather than merely no reason against it. A single location's NAP is not contested identity; it is one set of three strings written down in several places, some of them stale. What the work needs is a dated observation per place and a comparison â€” which is a flat snapshot, not an event stream. `observation-label-map.md` Â§5 states this in the Skill itself so the next session does not re-derive it. D4's "reverses if" condition â€” a client with genuinely contested identity across many locations or brands â€” did **not** fire and is not close to firing.
+
+---
+
+## D37 â€” The website is a NAP source, and every place it states NAP is its own row â€” 2026-08-02
+
+**Decision.** The live site at `site.canonical_host` is observed as a NAP source alongside the profile and the directories, and it is observed **first**. Where the site states the name, address or phone in more than one place, each place is a separate row of the Observed Sources table. Structured markup carrying a NAP is its own row beside the visible text on the same page.
+
+**Why.** The source material audits the profile and each directory and does not read the website at all. That omission hides the most consequential class of variance there is: the business's own two first-party surfaces disagreeing with each other. A directory being stale is somebody else's copy going out of date; the site and the profile disagreeing is the business making two different statements about itself, and only one of them can be right.
+
+One row per site is not enough either. A footer, a contact page, a schema store and a map widget are separate stores edited at separate times, and a single site-level row records whichever one was looked at while presenting it as the site's position.
+
+**Evidence from the validation case.** The consuming project emits its NAP from seven distinct stores. Its own cross-check found four of them carrying a designator the other three did not, in three different casings. A one-row-per-site model would have recorded one of those and called the site consistent.
+
+**This is an addition, not codified past practice.** Flagged per the D9 pattern so it is not mistaken for precedent.
+
+**Consequence.** `Done when` item 2 requires the site to be a row and requires each NAP-bearing place to be its own row. It is the item that makes a site-versus-profile mismatch surface mechanically rather than by whoever happens to notice.
+
+---
+
+## D38 â€” An unchecked source is `Unknown`; no local-presence observation is ever `Estimated` â€” 2026-08-02
+
+**Decision.** Two rules, one reason.
+
+`present-correct`, `present-wrong` and `missing` are observations. `missing` means a check was run and no listing was found. A source nobody checked is `Unknown â€” not checked`, with the reason, and `Done when` item 9 forbids an unchecked source being recorded as `missing`.
+
+And no observation in this Skill carries `Estimated`. Every value in the record is a string somebody published or a comparison between two such strings. On a well-formed run the `Estimated` count is `0`, and a non-zero count is a defect rather than a variation.
+
+**Why.** These are policy kernel Â§2's "`Unknown` never silently becomes a default" applied to the two mechanisms by which it was going to happen here. A citation table is a natural to-do list, and a to-do list marks unchecked things as absent, because absent is what you do something about. That turns a thin audit into a confident-looking one: work is sent at listings that already exist, while the directories nobody opened stay invisible behind a table that appears complete.
+
+The `Estimated` half is **stricter than policy kernel Â§2**, which permits `Estimated` for model inference generally. It narrows the permitted set for one class of observation; it adds no label and contradicts nothing. This is the same move D13 made for SERP composition, for the same reason: there is nothing here for a model to infer, and a label permitting inference would let an unopened directory be described.
+
+**External validation.** Search, 2026-08-02: current guidance holds that inconsistent listings split entity resolution and that duplicate listings are common and damaging â€” an argument for checking each source, and against a table that reports on sources it never opened. The specific figures quoted alongside that guidance were not encoded; see D40.
+
+---
+
+## D39 â€” Presence is checked; wording is not, including the profile description â€” 2026-08-02
+
+**Decision.** The GBP checklist records that a description exists and how long it is. It does not evaluate it, score it, check it for a term, or draft a replacement. The same holds for every language field the record names: they are named, with their owner, and never filled.
+
+**What we reject, having read it.** The source material's instruction to place the primary keyword within the first hundred characters of the seven-hundred-and-fifty-character description.
+
+**Why reject.** Two independent reasons, either sufficient. It is a wording instruction, and policy kernel Â§1 gives wording to the Skill in `authority.authority_override_skill` â€” the same line D24 drew for anchor text and D31 drew for titles and meta descriptions. And the threshold is an unsourced figure of the kind D31 rejected.
+
+**External validation.** Search, 2026-08-02: current guidance holds that the profile description is **not** a direct ranking input, contributing to profile completeness and to answer-engine summaries rather than to position. So the rejected instruction is not merely out of scope here; the premise underneath it is weaker than it sounds.
+
+**The boundary is not "no opinion about the profile".** Guideline compliance is checked and is a finding: a name field carrying a tagline, a store code, or opening-hours text is `present-wrong` with the observed string quoted, because the platform's own documentation says what a name field may contain. What the name should say instead, where a choice exists, is language and goes to the voice Skill. This Skill names the constraint; that Skill writes inside it.
+
+---
+
+## D40 â€” Every unsourced local threshold is rejected, and the direction underneath it is kept â€” 2026-08-02
+
+**Decision.** No number enters this Skill that its source cannot ground. The class is rejected once here rather than argued four times.
+
+**What we reject, having read it.** Read on 2026-08-02, across the source material and current external guidance:
+
+| Rejected figure | Where it appeared |
+|---|---|
+| A target citation count â€” a band of forty to eighty, "thirty accurate beat two hundred poor", "ten beat fifty" | Citation guidance |
+| A share of consumers who lose trust over inconsistent details | NAP consistency guidance |
+| A citation-count comparison presented as a routine outcome | NAP consistency guidance |
+| The share of shared content at which duplicate-detection fires, and the share of a page that must be unique | Location-page guidance |
+| A number of pages to publish per week, and a count of cities worth targeting | Location-page guidance |
+| Keyword position within the first hundred characters of a description | The source material â€” also rejected on D39's first ground |
+
+**Why.** Policy kernel Â§2 forbids inventing a metric, and quoting somebody else's invented metric is the same act with an extra step â€” D31 settled this and it transfers unchanged. These are worse than most in one respect: they are stated to the point, which makes an unsourced convention read as a measurement, and they concern a system nobody involved can observe.
+
+**What we keep instead.** The direction, where external validation supports it and only as a direction. Accuracy across fewer sources is reported to outperform volume across many. Near-duplicate location-page sets are treated as scaled content abuse and can be deindexed as a set. Both are encoded as constraints on what the record must contain, with no threshold attached.
+
+**The one distribution the bundle does carry is carried as context, not as arithmetic.** External guidance read 2026-08-02 attributes roughly a third of local pack weight to profile signals in aggregate â€” around 32%, up to 36% in one source. That is D3's premise and it is confirmed. It is recorded in `gbp-checklist.md` Â§5 as third-party reporting about an unobservable system, explicitly not as a calculation anyone should perform against an individual profile.
+
+---
+
+## D41 â€” Local presence plans pages, decides no target, and writes no planning row â€” 2026-08-02
+
+**Decision.** The Page Plan names which location and service-area pages should exist, which single locality each owns, its disposition, and the structural elements it must carry. It decides nothing about what any page ranks for, and it writes no row into `planning_record.path`.
+
+**Why the target decision stays out.** `architecture.md` Â§2 gives page ownership to `content-strategy-architect`, whose completion criterion is that every page has an owner, a boundary and a link target, reached from an evidence pack. A location page is a page. Deciding its term here would put the same decision in two Skills with two completion criteria and no rule for which wins â€” and it would be made without the pack, on a locality name.
+
+**Why no planning row.** D17's reasoning transfers unchanged. Policy kernel Â§6 requires a target row to be identifiable unambiguously, and a planning row belongs to a page that architecture has decided should exist. A page this Skill proposes has not been through that decision yet. Two Skills writing the same row from different lifecycles is the failure D2 was drawn to avoid.
+
+**Consequence.** The Page Plan is an input to `content-strategy-architect`, which may hold or re-scope a page on evidence this Skill does not carry. `location-page-plan.md` Â§3 states it: the plan proposes pages, it does not reserve them.
+
+**A gap found and not filled.** Neither `seo-geo-research` nor `content-strategy-architect` produces the list of localities a business serves, and `project-config.schema.yaml` has no key for one, so it arrives from the operator every run. Recorded as a proposal in D45, not implemented.
+
+---
+
+## D42 â€” The variance comparison runs without a canonical, against a named base â€” 2026-08-02
+
+**Decision.** Comparing the observed sources against each other does not require a canonical NAP. Where none was agreed, the first Observed Sources row â€” the site's primary NAP surface â€” is designated the **comparison base**, every other source is compared against it, and the variance table states at its head that the base is a base and not a canonical.
+
+`Done when` items 4, 5 and 6 therefore never read `n/a`. Only items 3, 11 and 12 may, and only on an observation-only run.
+
+**Why.** Caught by the D10 validation run, not by review. In the first draft the whole comparison hung off the canonical, so a consuming project with no declared canonical took the observation-only path and the variance table was excused â€” leaving the run's central finding sitting as two rows of a transcription table for a reader to notice by eye. The Skill would have failed its own validation case while every rule it needed in order to pass was already written correctly.
+
+This is D29's fault in a second Skill, and the underlying error is the same one: treating a decision as a precondition of the observations that inform it. Auditing what a presence currently says needs no agreement about what it should say, and is usually the most useful thing to be able to say about one.
+
+**Why the site is the base, stated openly.** It is the surface the business most directly controls and can change without a third party's approval, which is a reason to compare *from* it. It is not a claim that it is correct, and a variance row does not mean the other source is wrong. An agent never derives a canonical from the observations by majority, recency, or authority â€” a count of directories is not evidence about a business's own name.
+
+---
+
+## D43 â€” A dated observation from an earlier session is carried with its date, never as current â€” 2026-08-02
+
+**Decision.** Where the only available observation of a source is one made in an earlier session, it is carried with its original date and its original surface, its row reads `as at <date>, not re-observed this run`, and the source's **current** state is listed in the Unknowns table.
+
+**Why this needed deciding.** Both alternatives are wrong in a way that is easy to miss. Presenting a four-day-old string as the profile's current value states a fact nobody checked. Discarding it because it is not fresh leaves the comparison unmade, which throws away the only evidence there is and reports `Unknown` where a real, dated finding was available.
+
+The generalisation is the one already in `metric-label-map.md` for research metrics, moved one step: an observation is evidence about **its own date** and about no other. A local presence changes when somebody edits it, which makes staleness a first-class property of every row rather than an edge case.
+
+**Evidence from the validation case.** The consuming project's only profile observation was four days old and had been superseded on the same day it was made â€” the profile was aligned to one designator in the morning and the site was moved to a different one that afternoon, by two separate instructions. A rule that discards stale observations would have reported the profile as `Unknown` and missed the divergence entirely; a rule that presents them as current would have asserted a profile state that no longer had to be true.
+
+---
+
+## D44 â€” Reviews are not checked here, and the gap is recorded rather than filled â€” 2026-08-02
+
+**Decision.** Reviews, ratings, review velocity, and replies are outside this Skill. So are posts, offers, questions and answers, messaging, and profile performance insights. Each is listed in `gbp-checklist.md` Â§4 with its reason, so the absence is visible in the Skill rather than inferred from its silence.
+
+**Why, per exclusion.** Replying, posting, and responding are live changes to an external surface â€” policy kernel Â§1, without exception. Performance insights are post-publication measurement â€” `architecture.md` Â§6. Reviews and ratings are a continuously-changing state with their own lifecycle, and D2's rule keeps that out of a record whose other fields are one-time decisions; a review count written once into a snapshot is the state-column rot D30 described, arriving through a different door.
+
+**The honest part.** External guidance read 2026-08-02 places review signals second only to profile signals in local weight, at roughly 16%. So this is a real gap in coverage, not a category nobody needs, and calling it out of scope does not make the need go away. It is recorded as a proposal in the run report and is **not** implemented: adding it requires the scope-expansion rule in `architecture.md` Â§5 â€” external validation plus explicit operator approval â€” and the external validation half is now done.
+
+**What would satisfy it, if approved.** Not a field inside this record. A separate unit with its own completion criterion and its own cadence, which is what its lifecycle actually calls for.
+
+---
+
+## D45 â€” Proposals recorded, not implemented: a service-area list and a local-presence output path â€” 2026-08-02
+
+**Proposal one.** A `local_presence.service_areas` list in `project-config.schema.yaml`. `service_area_mode` already declares *whether* a business serves areas rather than a storefront; nothing declares *which* areas. The Page Plan needs that list on every run, and it arrives from the operator every run.
+
+**Proposal two.** An optional output-directory key for this Skill's record, matching `research_output.path` (D22) and `architecture_output.path` (D35). Neither of the existing two is reused: a local presence record is neither research output nor an architecture record, and quietly widening a key's meaning is worse than leaving the question open â€” the reasoning D33 gave and D35 upheld.
+
+**Not implemented.** The schema is shared layer, and this task's authority covered exactly one commit of edits already on disk. Proposing a third path key immediately after the second was approved is also the point at which the pattern is worth settling once rather than one Skill at a time.
+
+**Current behaviour, which is not broken.** Service areas are supplied by the operator at run time and the record names who supplied them. The record is emitted in session, or written to a directory the operator supplies at run time. No path is invented and no locality is assumed.

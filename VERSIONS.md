@@ -10,7 +10,7 @@ Installed copies in consuming projects are byte-identical to a tag and are never
 
 ## Unreleased
 
-Shared reference layer in place. Two of three Skills authored.
+Shared reference layer in place. All three Skills authored.
 
 Skill files carry `version: 0.0.0-unreleased` in frontmatter until the first tag is cut (`docs/decisions.md` D19).
 
@@ -23,10 +23,10 @@ Skill files carry `version: 0.0.0-unreleased` in frontmatter until the first tag
 - `docs/architecture.md`, `docs/decisions.md`, `docs/run-reports/`
 - `skills/seo-geo-research/SKILL.md` + six reference files
 - `skills/content-strategy-architect/SKILL.md` + eight reference files
+- `skills/local-presence-manager/SKILL.md` + six reference files
 
 **Not yet present:**
 
-- `skills/local-presence-manager/SKILL.md`
 - `scripts/validate-skill.sh`
 
 ### Added 2026-08-03 — `seo-geo-research`
@@ -64,4 +64,21 @@ Decisions recorded: D24–D33. Four are methodology changes rather than codified
 
 D10 validation case run: Hormone Health, **pass** — the Skill flagged the missing numeric snapshot on all 35 rows of the cluster without being told to look for it. The run also caught a sequencing fault in the draft, fixed as D29. See `docs/run-reports/2026-08-02-content-strategy-architect.md`.
 
-No tag will be cut until all three Skills pass their validation case in `docs/decisions.md` D10.
+### Added 2026-08-02 — `local-presence-manager`
+
+Establishes what one business location's presence is: one canonical NAP agreed once, a thirteen-item Google Business Profile checklist, a citation list carrying a status per source, and a location and service-area page plan. Sixteen mechanically-checkable `Done when` items, ten stop-and-ask gates and thirteen continue-silently gates, and a zero-tool path that is the normal path rather than a degraded one. Changes nothing live: no profile edit, no listing submission, no publication, no spend.
+
+Reference files: `observation-label-map.md`, `canonical-nap-record.md`, `gbp-checklist.md`, `citation-sources.md`, `location-page-plan.md`, `local-presence-record-template.md`.
+
+Decisions recorded: D36–D45. Four are methodology changes rather than codified past practice, each externally validated and flagged as an addition per the D9 pattern:
+
+- **D37** — the website is a NAP source, and every place it states a NAP is its own row. The source material audits the profile and the directories and never reads the site.
+- **D38** — an unchecked source is `Unknown`, never `missing`, and no local-presence observation is ever `Estimated`.
+- **D42** — the variance comparison runs without a canonical, against a named comparison base.
+- **D43** — a dated observation from an earlier session is carried with its date, never as current and never discarded.
+
+D40 rejects six unsourced thresholds found in the source material and in current external guidance, and keeps only the direction underneath them. D44 records the review-signal gap — externally validated as the second-heaviest local factor — as a proposal rather than filling it.
+
+D10 validation case run: the consuming project's NAP state, **pass with one declared limitation** — the Skill reached the known one-word site-versus-profile address mismatch without being told where to look, and caught a sequencing fault in the draft, fixed as D42. See `docs/run-reports/2026-08-02-local-presence-manager.md`.
+
+No tag will be cut until all three Skills pass their validation case in `docs/decisions.md` D10. **All three have now reported a pass**, each with its limitations declared in its run report. Cutting the first release is a separate task: it replaces `0.0.0-unreleased` across three `SKILL.md` files (D19) and needs a stated reason in this file. Nothing here is tagged.
