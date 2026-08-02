@@ -295,3 +295,151 @@ Forbidden, and this is what §6 excludes: retaining exports for period-over-peri
 **Why.** A defect in the shared layer, introduced when it was authored: the policy kernel defines five evidence labels and the handoff block enumerated four. Three Skills would each have invented a local workaround for the same inconsistency. Fixed once, centrally.
 
 **Consequence.** `seo-geo-research` should drop its folding convention and count `Calculated` directly. Carried as a follow-up.
+
+---
+
+## D24 — Architecture decides link targets; it never decides anchor wording — 2026-08-02
+
+**Decision.** The internal link map carries a **target concept** — what the link is about — and never an anchor phrase. `references/internal-link-map.md` §4 draws the line, and the record carries no column headed `Anchor text` or `Suggested anchor`.
+
+**Why this needed deciding.** Anchor text sits exactly on the seam. That a link should describe where it goes is a property of the link graph and belongs here. The words that do the describing are language and belong to the Skill in `authority.authority_override_skill` (policy kernel §1). Every internal-linking source read for this Skill hands over suggested anchors, and each one reads as helpful rather than as a boundary crossing — which is precisely why the rule has to be written down rather than left to judgement.
+
+**What we reject, having read it.** Package 27's Step 5 contextual-link template, whose columns are source paragraph, target URL, **suggested anchor**, priority; and its anchor-text distribution targets (descriptive 60–80%, branded 10–20%, generic under 10%, exact-match under 5% per target).
+
+**Why reject the distribution targets specifically.** They are unsourced percentages presented as thresholds, and they are thresholds *about wording*. Both halves fail: policy kernel §2 forbids inventing a metric, and policy kernel §1 gives the wording to another Skill.
+
+**Reverses if.** A consuming project's voice Skill declines to own anchor wording, leaving it unowned.
+
+---
+
+## D25 — Reject the structure score, as D12 rejected the keyword score — 2026-08-02
+
+**Decision.** No architecture score, no structure score, no /100 of any kind appears in this Skill.
+
+**What we reject, having read it.** Package 26's architecture score (start 100; −10 per orphan, −10 per island, −5 per important page deeper than three clicks, −10 per URL migration without a planned 301, −5 per inconsistent URL parent), its linking-mode structure score, and package 27's Anchor Score /10.
+
+**Why.** `docs/decisions.md` D12's reasoning transfers unchanged: a composite over inputs of mixed evidence quality carries no label that is true of it, and completing the arithmetic requires giving `Unknown` inputs a number. The scores here are worse than the keyword scores in one respect — their penalty weights are stated to the point, with no source, which makes an invented metric look like a measurement.
+
+**What we keep instead.** The required links are checked and reported as counts of what is present against what is required (`Done when` item 12). A reader can see the gap without being handed a number that hides which part of it matters.
+
+---
+
+## D26 — The schema decision separates rich-result eligibility from entity value, and `FAQPage` and `Service` are both `no` — 2026-08-02
+
+**Decision.** Every recommended schema type is assessed on two questions that are never merged: is it a documented Google rich-result feature, and does it aid entity or answer-engine understanding? The first is answered by reading Google's feature documentation and stamping the read with its date. It is `Measured` or `Unknown`, never `Estimated`.
+
+**Evidence.** Google's structured-data feature gallery, read 2026-08-02: 30 documented features. `LocalBusiness` is among them. **`Service` is not.** **`FAQPage` is not** — external search the same day confirms a deprecation notice dated 2026-05-07, after which FAQ rich results no longer appear for any site, including the government and health verticals that had retained eligibility after the August 2023 restriction.
+
+**What we reject, having read it.** Package 18's content-to-schema table, which maps a service page to `Service` schema with the rich-result eligibility "Service snippet". There is no such Google rich result. The same table lists `FAQPage` producing an "FAQ accordion in SERP", which was true when written and is not now.
+
+**Why this matters more than a corrected row.** A brief that says a page is eligible for a rich result makes a promise the SERP either keeps or does not. Encoding a type as rich-result-earning when it is not puts an unkeepable promise into every brief that uses it, and nothing downstream is positioned to catch it.
+
+**This is an addition, flagged.** The operator's existing practice has no rule separating the two questions, and the planning record in the validation case declares `FAQPage` on five rows. Flagged per the D9 pattern so it is not mistaken for precedent.
+
+**Consequence.** The dated snapshot in `schema-decision.md` §2 is recorded as evidence of one read, explicitly not as a standing list, and the Skill re-reads rather than citing it.
+
+**Reverses if.** Google restores FAQ rich results, or documents `Service` as a feature. Both are re-checked by the step itself, which is the point of stamping the read.
+
+---
+
+## D27 — Aggregate cluster demand is reported as a floor, never as a total — 2026-08-02
+
+**Decision.** D9 requires evaluating demand across the whole cluster. The aggregate is reported as a **floor** over the members whose demand is known, plus the named list of members whose demand is `Unknown`. Where every member is `Unknown` there is no floor and the line reads `Unknown`. `Done when` item 6 checks that the word `floor` appears whenever any member is `Unknown`.
+
+**Why.** D9 as written does not survive contact with a partial pack. Summing demand across members requires a number for every member, and an `Unknown` member has none — supplying one is the "`Unknown` silently becomes zero" failure policy kernel §2 names, arriving through arithmetic rather than through carelessness. A floor is the strongest statement the evidence actually supports, and it stays honest at every level of pack completeness.
+
+**Boundary.** The aggregate sizes the proposition and feeds the brief's context. It never ranks this cluster against another and never sequences which page is written first. Sequencing is not this bundle's decision, and a cross-cluster comparison built on floors of differing completeness would be a composite score by another name — D12.
+
+---
+
+## D28 — One page or two is decided by observed SERP overlap, and an unobserved pair is never split — 2026-08-02
+
+**Decision.** Two candidate terms share one page when their observed top tens have **4 or more URLs in common**; 3 or fewer means separate pages. The threshold is stated as a sentence in the record every run. Where either SERP was not observed, the pair is `Unknown` and is **not** split; the second term is held.
+
+**Why a threshold at all.** "Do these two terms need two pages?" is otherwise answered by how different the phrases look, which is the intuition that builds cannibalization deliberately. The overlap count answers it from what the engine actually returned.
+
+**Why 4, and why it is stated openly.** External validation, 2026-08-02: published practice puts the useful band at roughly 3–6 shared URLs of the top ten, with 4 the common middle. It is a convention, not a measurement, so the record states which number was used rather than applying it invisibly. An operator who wants tighter or looser clusters changes it, and the change is visible.
+
+**Why the unobserved default is "one page".** The asymmetry is not obvious and is therefore fixed here. Splitting wrongly creates two live pages that compete, and unwinding that is expensive. Not splitting wrongly leaves a page unbuilt, which costs nothing that was not going to be spent anyway. **Absent evidence never authorises a new page.**
+
+**This is an addition, flagged.** The validation case's planning record contains the same instinct written as prose — several rows say a separate post should not be published "unless SERP proves separate intent" — but with no test, no threshold, and no record of the test ever having been run. Encoding the test is the addition.
+
+---
+
+## D29 — Re-verification of inherited decisions runs before the evidence pack is required — 2026-08-02
+
+**Decision.** The inventory of existing pages and the re-verification of their decisions is step 2, ahead of pack ingestion at step 3, and it runs on every run. Stop-and-ask gate 3 (no pack) gained a third option: a **re-verification-only run** that emits the inventory, the defects and the unknowns, marks `Done when` items 5–14 `n/a`, writes no planning row, and reports `partial`.
+
+**Why.** Caught by the D10 validation run, not by review. In the first draft the pack was required at step 2, so pointing the Skill at an existing cluster with no pack ended the run before the re-verification pass could execute — and the Skill would have failed its own validation case on sequencing alone, while every rule it needed in order to pass was already written correctly.
+
+The underlying error was treating the pack as a precondition of the whole Skill rather than of the decisions that consume it. Auditing what an existing cluster can and cannot evidence needs no new research, and is often the most useful thing the Skill can say about one.
+
+**Consequence.** "What can this cluster still prove about itself?" is answerable as a standalone run. That is the shape the D10 validation case actually calls for.
+
+---
+
+## D30 — The planning record gets a write rule per stage, and state fields are not written at all — 2026-08-02
+
+**Decision.** Two write points, both inside this Skill's own stages: **cluster decided** (end of step 8) and **brief produced** (end of step 11). Stages this bundle does not own are named in `planning-record-protocol.md` §5 without being defined. Owned fields are classified before writing: **intent** fields are written, **state** fields are not.
+
+**Why the two write points.** The documented failure is a planning database read constantly and written to almost never, with no write rule for any lifecycle stage except the last. A single write point at the end reproduces it. Two points also mean that a run stopping between them leaves the record in a state that says so, rather than in one that looks finished.
+
+**Why state fields are not written even when `owned_fields` names one.** This is the D2 lesson applied to a single column. A field tracking progress, position or status after handoff would be set once by this bundle, at the only moment it is present, and would then rot with no owner — the original failure in miniature. Where `owned_fields` names such a field, the Skill records a finding and leaves the field alone.
+
+**Evidence from the validation case.** The planning record carries `Publish Status`, `Brief Status` and `Rank Math Score` alongside intent fields. One `Brief Status` cell holds a 400-character narrative including an unresolved post-publication issue — a state column being used as a log because no field owns that stage. The prediction and the artifact match.
+
+**Boundary.** Naming the unowned stages is the whole of what is done about them. No cadence, workflow, or schedule is defined for any stage outside this bundle.
+
+---
+
+## D31 — Reject package 17 in full — 2026-08-02
+
+**Decision.** Nothing from `17-metadata-and-social-markup` enters this bundle. Every candidate file was read first.
+
+**Why.** Three independent reasons, any one sufficient.
+
+*It is language.* Title formulas, meta-description templates, power-word lists, AIDA and PAS frameworks, and CTA patterns are wording, and wording belongs to the Skill in `authority.authority_override_skill` (policy kernel §1). This is the largest single block of language material in the source set.
+
+*Its numbers are invented.* Brackets in a title `+38%` CTR, numbers `+20–30%`, current year `+10–15%`, question format `+14%`, and a positional CTR table quoted to one decimal place — all with no source. Policy kernel §2 forbids inventing a metric, and quoting someone else's invented metric is the same act with an extra step.
+
+*Its method is post-publication measurement.* The A/B testing procedure — baseline CTR for 30 days, change one element, monitor 30 or more days, compare at the same average position — is performance monitoring, excluded by `architecture.md` §6.
+
+**What was considered and still rejected.** The character budgets (roughly 50–60 for a title, 150–160 for a description) are display constraints rather than wording, and a case can be made that a brief should carry them. Rejected anyway: the brief already names the title tag and meta description as fields the voice Skill owns, and handing over a character budget alongside is how a "just the constraint" hand-off becomes a drafting hand-off. The voice Skill knows the limits of the surface it writes for.
+
+---
+
+## D32 — Source package cherry-pick ledger, packages 17, 18, 26, 27 — 2026-08-02
+
+Every candidate file read before the accept/reject call. Apache-2.0 source; **no text reproduced from any of them**, per D1. Packages 26 and 27 ship the same `SKILL.md` and the same `link-architecture-patterns.md`; both were verified byte-identical and read once.
+
+| Package / file | Verdict | Basis |
+|---|---|---|
+| 26/27 `site-structure-optimizer/SKILL.md` | **Reject** as a whole | Two modes at whole-site altitude — hierarchy, navigation, URL taxonomy, orphan sweeps. A different unit with a different completion criterion (`architecture.md` §2) |
+| 26/27 — architecture score and structure score | **Reject** | See D25 |
+| 26/27 `references/link-architecture-patterns.md` — hub-spoke required links | **Accept**, rewritten | Pillar → every spoke and every spoke → pillar is the one structural rule in the file that is checkable and is not a quota. It is `Done when` item 12 |
+| 26/27 `link-architecture-patterns.md` — the five models, selection thresholds, measurement targets | **Reject** | Site-wide topology selection, and every figure in it marked `Estimated` by the source itself. A cluster does not choose a sitewide model |
+| 26/27 `link-architecture-patterns.md` — migration safeguards, monthly monitoring | **Reject** | 301s and re-crawl cadence are live changes and post-publication monitoring — policy kernel §1 and `architecture.md` §6 |
+| 26 `references/site-type-patterns.md` | **Reject** | URL taxonomy and depth by site type. Whole-site, and every figure `Estimated` |
+| 26 `references/mermaid-templates.md` | **Reject** | Diagram templates with a colour key. Presentation, owned by the consuming project's design process |
+| 27 `references/linking-templates.md` — Step 4 topic-cluster table | **Accept**, rewritten | Missing hub→spoke and missing spoke→hub as explicit columns is the right check. Re-authored around target concepts, with the anchor column removed per D24 |
+| 27 `linking-templates.md` — Steps 3, 5, 6, 7 | **Reject** | Anchor wording and anchor-share thresholds (D24); navigation review (whole-site); the phased implementation plan and its tracking cadence (`architecture.md` §6) |
+| 27 `references/linking-example.md` | **Reject** | Worked example of the rejected output, with a scored before/after |
+| 27 `scripts/connectors/crawl.py`, `linkgraph.py` | **Reject** — not read past their purpose | Site crawler and internal-PageRank calculator. Whole-site technical tooling |
+| 18 `serp-markup-builder/SKILL.md` — `schema` mode step order | Partial accept | Identify type → generate → validate is sound, and the visible-content-match rule is right. The generation and validation halves are implementation, owned elsewhere |
+| 18 `references/schema-decision-tree.md` — content-to-schema mapping | **Accept** as a starting shape, corrected | The mapping question is the right question. Its rich-result column is wrong on `Service` and out of date on `FAQPage` — see D26 |
+| 18 `schema-decision-tree.md` — industry recommendations, P0–P4 priority tiers | **Reject** | The tiers are a priority ranking, which is a sequencing decision this bundle does not make (D11), and the industry table is an ungrounded default |
+| 18 `references/schema-templates.md`, `validation-guide.md` | **Reject** | JSON-LD blocks, validator workflows, error tables, and a monthly/quarterly maintenance cadence. Implementation and monitoring |
+| 18 `schema-instructions-detail.md` — deprecation caveats | **Accept** as a pattern, re-derived | The instinct to carry deprecation warnings is right. The specific claims were re-verified independently rather than inherited, and what is encoded here is "read the documentation and stamp the read" rather than a frozen list |
+| 17 — every file | **Reject** | See D31 |
+
+**Note on the source's own strengths.** Two things in this set are better than a first reading suggests. Package 18's insistence that markup correspond to visible content is a real constraint, correctly stated, and it is carried here. And package 27's separation of contextual in-body links from navigational links is a distinction worth keeping, even though everything the source built on it was rejected.
+
+---
+
+## D33 — Proposal recorded, not implemented: a config key for architecture output — 2026-08-02
+
+**Proposal.** An optional `architecture_output.path` in `project-config.schema.yaml`, matching the `research_output.path` added by D22, so the operator is not asked for an output directory at run time.
+
+**Not implemented.** The schema is shared layer, and this task's authority covered only the four edits already made. `research_output.path` was deliberately **not** reused: it names where research output goes, and a cluster architecture record is not research output. Widening an existing key's meaning silently is worse than leaving the question open.
+
+**Current behaviour, which is not broken.** The record is emitted in session, or written to a directory the operator supplies at run time. No path is invented. The planning-record write is unaffected — it goes to `planning_record.path`, which is already a required key.
