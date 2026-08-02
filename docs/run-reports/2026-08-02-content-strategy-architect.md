@@ -102,7 +102,7 @@ Every methodological claim encoded was checked before being written, not after. 
 
 ## Commit
 
-`fed5a53` — `feat: author content-strategy-architect skill and its reference layer`
+`b7accba` — `feat: author content-strategy-architect skill and its reference layer`
 
 Preceded in this session by two fix commits carrying the authorised shared-layer work:
 
