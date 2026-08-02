@@ -138,6 +138,8 @@ Pattern from `local_presence.service_area_mode`: <value>
 | 1 | <page> | location / service-area | <one locality> | create / extend / keep / retire / Unknown | <URL or "none — to be created"> | <elements, per location-page-plan.md §1> |
 
 Localities planned: <n> · localities named but not planned, and why: <list or "none">
+Locality origin: <n> from `local_presence_extra.service_areas` · <n> named by the
+operator at run time
 Handed to content-strategy-architect for term ownership, cluster role, links and
 schema: <yes / no — with reason>
 

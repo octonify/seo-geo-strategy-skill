@@ -16,7 +16,7 @@ This is the short, always-loaded projection. The full authoring contract is [`sk
 
 **The client voice Skill always outranks this bundle on language.**
 
-Every consuming project declares `authority_override_skill` in its `project-config.yaml` (for example `dnc-content-voice`). When any recommendation from this bundle conflicts with that Skill on wording, claim strength, specificity, tone, or call-to-action framing:
+Every consuming project declares `authority_override_skill` in its `project-config.yaml` (for example `{client}-content-voice`). When any recommendation from this bundle conflicts with that Skill on wording, claim strength, specificity, tone, or call-to-action framing:
 
 - Accept the structural suggestion from this bundle: heading level, schema type, internal-link target, page ownership, cluster role.
 - Reject the language suggestion from this bundle: claim, outcome phrasing, specificity, urgency.

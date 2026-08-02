@@ -15,10 +15,10 @@ required:
     id:
       type: string
       description: Stable slug for the client. Used in record paths and IDs.
-      example: dnc
+      example: exampleco
     display_name:
       type: string
-      example: Divine Naturopathic Clinic & Wellness Center
+      example: Example Clinic & Wellness Center
 
   authority:
     authority_override_skill:
@@ -28,7 +28,7 @@ required:
         this Skill always outranks this bundle on wording, claim strength,
         specificity, tone, and CTA framing. Structural recommendations from
         this bundle are still accepted.
-      example: dnc-content-voice
+      example: exampleco-content-voice
       note: >
         Onboarding prerequisite. A consuming project without this Skill
         cannot complete the chain — the brief has no consumer.
@@ -40,7 +40,7 @@ required:
         The live canonical host, exact scheme and subdomain. Any differing
         host found in a package, record, or stored value is a finding, not
         an authority to follow.
-      example: https://divinenaturopathic.com
+      example: https://www.example.com
     cms:
       type: string
       enum: [wordpress, other]
@@ -52,7 +52,7 @@ required:
     primary_locality:
       type: string
       description: Primary city or metro for local intent validation.
-      example: Kirkland, WA
+      example: Anytown, ST
     national_dataset:
       type: string
       description: Country dataset used to cross-check thin local volume.
@@ -126,7 +126,7 @@ optional:
         The localities a service-area business serves. Required by the
         location page plan on every run; supplied by the operator every run
         when absent.
-      example: [Kirkland WA, Bellevue WA, Redmond WA]
+      example: [Anytown ST, Nexttown ST, Thirdtown ST]
 
   local_presence:
     gbp_profile_name:
