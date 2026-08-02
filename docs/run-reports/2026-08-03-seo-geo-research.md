@@ -103,6 +103,8 @@ Method. The drafted Skill was executed against only the seven raw Semrush artifa
 
 ## Commit
 
-`a5271e8` — `feat: author seo-geo-research skill and its reference layer`
+`dd673a8` — `feat: author seo-geo-research skill and its reference layer`
 
-Single commit, amended once to carry its own hash — a run report that cannot name the commit containing it is not usable by the coordinating agent. Not tagged.
+That commit carries every deliverable: the Skill, its six reference files, D11–D20, the `VERSIONS.md` update, and this report. Not tagged.
+
+A report cannot contain its own commit hash — writing the hash in changes the tree and so changes the hash. This line therefore names the commit containing the deliverables, and was corrected by a one-line follow-up commit that contains nothing else.
