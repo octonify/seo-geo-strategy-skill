@@ -97,23 +97,36 @@ required:
 
 optional:
 
-  research_output:
-    path:
-      type: string
-      description: >
-        Directory for evidence packs and candidate exports. When absent, a
-        Skill emits its pack in session and says so; it never invents a path.
-      example: content-production/01_sources/research
+  outputs:
+    description: >
+      One key per Skill, named for the Skill's directory. The convention is
+      fixed: a new Skill adds one key here and nothing else. Keys are never
+      shared between Skills — an architecture record is not research output,
+      and quietly widening one key's meaning is worse than adding another.
 
-  architecture_output:
-    path:
-      type: string
+      When a Skill's key is absent, that Skill emits its record in session
+      and says so. A path is never invented.
+    seo-geo-research:
+      path:
+        type: string
+        example: content-production/01_sources/research
+    content-strategy-architect:
+      path:
+        type: string
+        example: content-production/02_content-items
+    local-presence-manager:
+      path:
+        type: string
+        example: website-management/_reports
+
+  local_presence_extra:
+    service_areas:
+      type: list
       description: >
-        Directory for cluster architecture records and content briefs.
-        Deliberately separate from `research_output.path` — an architecture
-        record is not research output. When absent, the record is emitted in
-        session and says so; a path is never invented.
-      example: content-production/02_content-items
+        The localities a service-area business serves. Required by the
+        location page plan on every run; supplied by the operator every run
+        when absent.
+      example: [Kirkland WA, Bellevue WA, Redmond WA]
 
   local_presence:
     gbp_profile_name:

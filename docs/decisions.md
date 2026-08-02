@@ -621,3 +621,40 @@ The generalisation is the one already in `metric-label-map.md` for research metr
 **Not implemented.** The schema is shared layer, and this task's authority covered exactly one commit of edits already on disk. Proposing a third path key immediately after the second was approved is also the point at which the pattern is worth settling once rather than one Skill at a time.
 
 **Current behaviour, which is not broken.** Service areas are supplied by the operator at run time and the record names who supplied them. The record is emitted in session, or written to a directory the operator supplies at run time. No path is invented and no locality is assumed.
+
+---
+
+## D46 — One `outputs` block, one key per Skill, settled once — 2026-08-02
+
+**Decision.** `research_output.path` and `architecture_output.path` are consolidated into a single `outputs:` block carrying one key per Skill, named for the Skill's directory. `local-presence-manager` gets its key in the same change. The convention is stated in the schema: **a new Skill adds one key here and nothing else.**
+
+**Why.** Three separate path keys were added in three separate runs (D22, D35, D45), each correctly declining to reuse its predecessor and each requiring its own decision. The reasoning was right every time and the outcome was still three top-level blocks with no stated pattern. Three instances is where a convention is cheaper than a fourth debate.
+
+The no-sharing rule that produced the separate keys is **preserved, not reversed** — it is now written into the block itself rather than re-derived per Skill.
+
+**Why now.** Zero consuming projects have this bundle installed. Consolidating costs only two key renames inside this repository; after the first install it would cost a migration in every consumer. This is the cheapest this change will ever be.
+
+**Consequence.** `seo-geo-research` and `content-strategy-architect` reference the old key names and must be updated to `outputs.<skill-name>.path`. Carried as a follow-up.
+
+---
+
+## D47 — `local_presence_extra.service_areas` added — 2026-08-02
+
+**Decision.** Approve the first half of D45. The schema gains an optional service-area list.
+
+**Why.** The location page plan needs it on every run and it arrives from the operator on every run. Same shape as D22 and D35: not a scope expansion, just removing a repeated run-time question.
+
+---
+
+## D48 — Review checking is approved in principle, deferred to v1.1 — 2026-08-02
+
+**Decision.** D44's proposal is **not** implemented in v1.0.0. The gap is real and the argument for it is accepted; the timing is not.
+
+**Why the gap is real.** External validation is complete and reported roughly 16% of local pack weight, second only to profile signals. That is the same class of argument that put local presence into v1 at all (D3). It is not rejected on merit.
+
+**Why v1.1 and not v1.0.0.** Two reasons that have nothing to do with the merit. The agreed deliverable was three Skills, and adding a fourth before any of the three has been used on a real task is building on unvalidated ground. And `architecture.md` §5 requires explicit operator approval for scope expansion; the coordinating agent may confirm a boundary interpretation (D21) or approve a schema key (D22, D35, D47), but adding a Skill changes the agreed deliverable and is not its call to make alone.
+
+**Shape, when it is built.** A separate unit with its own completion criterion, per D44's own recommendation — not a field inside the local-presence snapshot. A review count written once into a record that nothing updates is exactly the state-column rot D30 documents.
+
+**Reverses if.** The operator asks for it in v1.0.0, or first real use shows the local-presence record is not actionable without it.
+
