@@ -8,11 +8,23 @@ Installed copies in consuming projects are byte-identical to a tag and are never
 
 ---
 
-## Unreleased
+## v1.0.0 — 2026-08-02
 
-Shared reference layer in place. All three Skills authored.
+First release. All three Skills carry `version: 1.0.0` in frontmatter (`docs/decisions.md` D19).
 
-Skill files carry `version: 0.0.0-unreleased` in frontmatter until the first tag is cut (`docs/decisions.md` D19).
+**Reason for the release.** All three Skills passed their D10 validation case against real production data, and a consuming project is ready to install. Both halves are required: D10 gates the tag on validation, and a bundle nobody is installing has no reason to be tagged.
+
+### Declared limitations
+
+Each Skill passed with a limitation its own run report declares. They are collected here so an installer sees all three without opening three reports.
+
+| Skill | What was not validated | Why it is a limitation and not a defect |
+|---|---|---|
+| `seo-geo-research` | The validation pack's universe is 53 observed terms against the archive's 204-term export. The seven tool screenshots supplied show each panel's total but only its top five rows, so two terms present in the archive's national table are absent from the pack | Input coverage, not method. The pack declares the shortfall in a universe-coverage caveat and lists it in its Unknowns table rather than presenting 53 as complete. Run against the full CSV export, the universe would not have been narrower |
+| `content-strategy-architect` | The pack-consuming path. No `seo-geo-research` pack existed for the validation cluster, so gate 3 fired and the case ran as a **re-verification-only run**. Primary-keyword selection, the cluster map, the link map, the schema table, the briefs and the planning write were not exercised against real data | The run validated what it could reach, and reached a real finding there: 35 of 35 rows carry a declared primary keyword and none carries a snapshot date, source, or rejected alternatives. The gate behaved correctly. The untested path is untested, not known-broken |
+| `local-presence-manager` | The profile side of the NAP comparison is not a live read. No profile export, dashboard screenshot, or reachable public listing was available, so the profile string came from the project's own dated record of it — a four-day-old observation | The Skill's own rules handled it: the row is carried with its original date, marked `not re-observed this run`, and the profile's current state goes to the Unknowns table. That requirement is D43 and it exists because of this run |
+
+One further limitation applies to the bundle rather than to any Skill: **review checking is not present.** External validation reports review signals as roughly 16% of local pack weight, second only to profile signals. The gap is accepted on merit and deferred to v1.1 as a separate unit with its own completion criterion, not as a field inside the local-presence record (D44, D48).
 
 **Present:**
 
@@ -81,4 +93,10 @@ D40 rejects six unsourced thresholds found in the source material and in current
 
 D10 validation case run: the consuming project's NAP state, **pass with one declared limitation** — the Skill reached the known one-word site-versus-profile address mismatch without being told where to look, and caught a sequencing fault in the draft, fixed as D42. See `docs/run-reports/2026-08-02-local-presence-manager.md`.
 
-No tag will be cut until all three Skills pass their validation case in `docs/decisions.md` D10. **All three have now reported a pass**, each with its limitations declared in its run report. Cutting the first release is a separate task: it replaces `0.0.0-unreleased` across three `SKILL.md` files (D19) and needs a stated reason in this file. Nothing here is tagged.
+### Fixed 2026-08-02 — release preparation
+
+`project-config.schema.yaml` consolidated `research_output.path` and `architecture_output.path` into one `outputs:` block carrying one key per Skill, with the no-sharing rule written into the block rather than re-derived per Skill (D46). Done before any consumer is installed, when the change costs two key renames instead of a migration. All three Skills now name their own key. `local_presence_extra.service_areas` added and wired into the location page plan (D47).
+
+A pre-release conformance pass over all three `SKILL.md` files and all twenty reference files against `references/skill-contract.md` found `§2`, `§3`, `§4` and `§7` clean, and two `§6` failures in the shared layer: `references/policy-kernel.md` named a real consuming client's voice Skill in its worked example, and `project-config.schema.yaml` carried one real client's id, display name, canonical host, locality and service areas in its `example:` fields. Both de-identified. Full result in `docs/run-reports/2026-08-02-v1.0.0-release.md`.
+
+Review checking was approved in principle and deferred to v1.1 (D48).

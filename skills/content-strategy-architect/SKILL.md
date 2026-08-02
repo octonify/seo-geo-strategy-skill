@@ -12,7 +12,7 @@ description: >
   language — that is the Skill named in `authority.authority_override_skill`.
   Not for NAP, Google Business Profile, or citations — that is
   local-presence-manager.
-version: 0.0.0-unreleased
+version: 1.0.0
 license: Proprietary
 unit: One cluster
 authority_override: read at runtime from project-config.yaml key `authority.authority_override_skill`

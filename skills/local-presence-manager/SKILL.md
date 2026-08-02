@@ -13,7 +13,7 @@ description: >
   page ownership for the pages this Skill plans. Not for writing a business
   description, page copy, or any other language — that is the Skill named in
   `authority.authority_override_skill`.
-version: 0.0.0-unreleased
+version: 1.0.0
 license: Proprietary
 unit: One business location
 authority_override: read at runtime from project-config.yaml key `authority.authority_override_skill`

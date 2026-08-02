@@ -9,7 +9,7 @@ description: >
   Not for choosing a primary keyword, designing a pillar and cluster map,
   deciding schema, or writing a brief: that is content-strategy-architect,
   which consumes this pack and makes those decisions with an evidence trail.
-version: 0.0.0-unreleased
+version: 1.0.0
 license: Proprietary
 unit: One service or topic area
 authority_override: read at runtime from project-config.yaml key `authority.authority_override_skill`
