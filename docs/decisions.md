@@ -658,3 +658,97 @@ The no-sharing rule that produced the separate keys is **preserved, not reversed
 
 **Reverses if.** The operator asks for it in v1.0.0, or first real use shows the local-presence record is not actionable without it.
 
+---
+
+## D49 — The release run's shared-layer de-identification is ratified — 2026-08-02
+
+**Decision.** The two edits made under the release task's own authority stand, and the reading of `skill-contract.md` §6 that produced them is adopted as the standing one.
+
+**What happened.** The pre-release conformance pass found `references/policy-kernel.md` §1 naming a real consuming client's voice Skill, and six `example:` fields in `project-config.schema.yaml` carrying one client's slug, business name, live domain, city, and service-area list. Both were fixed before tagging, and the run declared the edit rather than performing it silently.
+
+**Ratified, and why.** Both were introduced by the coordinating agent when the shared layer was authored, and neither was caught by the two earlier per-Skill conformance passes because both files sit outside `skills/`. The run's own reasoning is correct: §6's letter governs Skill files, but a bundle built for many consumers must not carry one client's domain and business name into every other install. This is the third instance of the same class, after the worked example de-identified in `intent-classification.md`.
+
+**Standing rule.** §6 is read as covering **every file that ships in an install set**, not only files under `skills/`. The install set is `references/`, `skills/`, `CLAUDE.md`, `AGENTS.md`, `LICENSE`, `project-config.schema.yaml`. Files under `docs/` are outside it and keep their real client references, because they are validation evidence and de-identifying them would destroy the proof that validation happened.
+
+**Reverses if.** Nothing foreseeable. The rule only widens what is already required.
+
+---
+
+## D50 — `local-presence-manager`'s out-of-brief edit is ratified — 2026-08-02
+
+**Decision.** The release run updated a third Skill under a follow-up whose brief named two. The edit stands.
+
+**Why.** D46 and D47 changed the schema. `local-presence-manager` carried both superseded key names and a sentence asserting that no config key existed for a local-presence output directory — which D46 had just made false. Leaving it would have shipped a Skill contradicting the schema it reads. And `local_presence_extra.service_areas` had nothing reading it: a config key no Skill consults does not remove a run-time question, which is the entire stated purpose of D47.
+
+The edits are inside the letter of D46 and D47 and outside the letter of the brief's step. The run flagged that rather than quietly widening its scope, which is the behaviour the drift rules are for.
+
+**Standing rule.** A follow-up that enumerates files is read as naming the ones known to need the change, not as forbidding a fourth that demonstrably does. A file left asserting something a just-approved decision has made false is a defect, not scope discipline. Report the extra file; do not leave it wrong.
+
+---
+
+## D51 — The architect's pack-consuming path is untested and must be exercised first — 2026-08-02
+
+**Decision.** Confirm the release run's characterisation of `content-strategy-architect`'s limitation. It is derived rather than quoted, and it is correct and material.
+
+**What it means.** That Skill's D10 case ran as a **re-verification-only** run: no evidence pack existed for the validation cluster, gate 3 fired, and the run proceeded down the inherited-decision path. It reached a real finding there — 35 of 35 rows carrying a declared primary keyword and none carrying a snapshot, source, or rejected alternatives — and the gate behaved correctly.
+
+But the Skill's **main path** was not exercised against real data: primary-keyword selection from a pack, the cluster map, the link map, the schema table, the briefs, and the planning-record write. Untested is not known-broken, and it is also not validated.
+
+**Consequence, and this is the operative part.** The first real run must exercise exactly that path: run `seo-geo-research` first to produce a genuine pack, then feed it to `content-strategy-architect`. A first real run that skipped the pack would re-test the one path already covered and leave the untested one untested through a second cycle.
+
+The expected stop at the planning-record write, caused by the consuming project having no row-identifier column, is designed behaviour and does not make such a run a failure. Everything upstream of that write is what needs exercising.
+
+---
+
+## D52 — Fix the four faults the first production run found — 2026-08-02
+
+**Decision.** F2, F3, F6 and F5 from `seo-geo-strategy-first-run-2026-08-02.md` are accepted as real and are fixed in v1.0.1. F1 and F4 are accepted as wording clarifications in the same release. F7 and F10 are deferred.
+
+**F2 — a third sequencing fault, same class as D29 and D42.** `seo-geo-research` step 5 requires Pass B "from the observed SERP" while SERPs are first observed at step 6. Followed literally, Pass B is impossible when it is asked for. The run executed the only possible order and said so.
+
+This is now three for three: every Skill in this bundle shipped with a step that required output from a step that had not run yet, and every one was found by execution rather than by reading. **The pattern is not coincidence and the contract should carry a check for it.** `skill-contract.md` gains a requirement: each procedure step names its inputs, and no step may name an output produced by a later step. That is mechanically checkable from the Skill file alone, so it fires at authoring time rather than on first production run.
+
+Fix: split step 5 into 5a (Pass A, from the query, before the reads) and 5b (Pass B, from the SERP, after them).
+
+**F3 — partial observation is undefined on both sides of the handoff.** The read protocol handles a read missing its date, locality, or surface, but `Done when` items 7 and 8, and the architect's overlap rule, know only observed and not-observed. A SERP with 4 of 10 positions captured is neither, and the run had to improvise at precisely the point the policy kernel says to stop and report. It reported, correctly.
+
+Fix: the overlap rule gains a third row — either SERP observed below a stated position count makes the pair `Unknown`, never split. The read protocol gains `partial` as a first-class observation state with the captured position count recorded.
+
+**F6 — `Done when` item 1 contradicts gate 2.** Item 1 forces `stopped` when any required key is missing; `row_identifier_field` is required; gate 2 option 3 produces the full record with the write `stopped` and overall `partial`. Under the literal reading, option 3 is unreachable. The run took the only interpretation that makes the gate's own option exist.
+
+Fix: scope item 1 to required keys **whose absence does not have its own gate**.
+
+**F5 — an enforced count with no definition.** Both Skills require the evidence-basis totals to equal the count of labelled values, but nothing says what one labelled value is. The run defined a rule, scripted it, and stated it beside the counts — which is honest and also means a second operator would define a different rule and both would pass. An unenforceable check that reports as enforced is worse than no check.
+
+Fix: `skill-contract.md` §5 defines the counting rule once, for all Skills.
+
+**F1 and F4 — wording.** Gate 3 reads as being about the channel; an authenticated-but-unreadable tool needed inference to classify. Reword to "the named tool cannot actually be read: not connected, not authenticated, or not reachable". And step 2's inherited-decisions pass is written for existing pages; the run correctly treated planning rows that declare a primary keyword as inherited decisions and surfaced three undocumented ones. Say so explicitly.
+
+**Deferred.** F7 (per-member selection trails) is a template improvement with a working alternative in place. F10 (no staleness threshold on the schema snapshot) needs a real second read before a threshold can be chosen honestly.
+
+**Reverses if.** Nothing foreseeable. Every item traces to an observed execution.
+
+---
+
+## D53 — The line-ending difference between repo and install is expected — 2026-08-02
+
+**Decision.** An installed file whose bytes differ from the working-copy bytes **only** by line endings is correctly installed. Byte-identity is asserted against the **tag's blob hashes**, not against a Windows working copy.
+
+**Why this is recorded.** Verifying the install, the coordinating agent found a raw `sha256` mismatch on a shared-layer file and had to establish whether the install had drifted. All 26 files are content-identical; the repository working copy is CRLF and the install is LF, because the install deliberately used `core.autocrlf=false core.eol=lf` after a first attempt silently rewrote every file.
+
+Without this note, every future install verification re-derives the same scare.
+
+**The rule.** Compare an installed file to `git ls-tree` blob hashes, or compare content with line endings normalised. A raw byte comparison against a Windows working copy is not a valid check and will always appear to fail.
+
+---
+
+## D54 — `access_mode` for the first consumer moves to `manual_paste` — 2026-08-02
+
+**Decision.** Accept F8. The consuming project's `research_tools.access_mode` changes from `browser_agent` to `manual_paste`. This is a **consumer config change, not a bundle change**; the bundle supports all three modes and none of them is at fault.
+
+**Why.** Two independent observed reasons. No authenticated session for the named tool exists in the browser, so the tool serves its logged-out page and the run consumed a free-checker quota on mechanics alone. And the browser renderer froze repeatedly on ordinary result pages: roughly a third of captures needed retries, two reads stayed partial, and one completed only via a lighter view.
+
+`browser_agent` was set on the strength of "the agent can work with the tool through a browser", which is a statement about capability. `access_mode` describes what is reliably available at run time. Those are different claims and the first run separated them.
+
+**Reverses if.** An authenticated session is established and renderer stability is demonstrated across a full run.
+
