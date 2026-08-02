@@ -371,13 +371,13 @@ Format gap: <counts> · Unanswered questions: <verbatim list>
 - **Unit:** <what was operated on>
 - **Status:** complete | partial | stopped
 - **Produced:** <artifact paths, or "in-session pack only">
-- **Evidence basis:** <n> Measured, <n> User-provided, <n> Estimated, <n> Unknown
+- **Evidence basis:** <n> Measured, <n> User-provided, <n> Calculated, <n> Estimated, <n> Unknown
 - **Assumptions:** <each assumption made without asking, or "none">
 - **Open questions:** <each unresolved item, or "none">
 - **Recommended next:** content-strategy-architect | return to operator
 ```
 
-`Calculated` values are counted under the weakest label among their inputs, and
-the pack states that convention.
+`Calculated` is counted as itself. Every label the policy kernel defines has its
+own count.
 
 `Status: partial` reported honestly always beats a gap filled with an estimate.

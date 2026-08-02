@@ -32,7 +32,7 @@ Owned by [`../SKILL.md`](../SKILL.md), applied at every step that produces a num
 
 1. **Anything read off a surface is `Measured`, and carries the surface, the market, and the date.** A volume without a market and a date is not evidence (policy kernel §2). Tools disagree with each other and each tool's own figures move over time, so the reading is only reproducible if it is stamped.
 
-2. **Anything derived arithmetically is `Calculated` and shows its inputs with their own labels.** A `Calculated` value inherits the weakest label among its inputs for purposes of trust, and this is stated when it matters.
+2. **Anything derived arithmetically is `Calculated` and shows its inputs with their own labels.** It is not relabelled as one of its inputs. A derivation from an `Estimated` input is no stronger than that input, and showing the inputs is what makes that visible — a reader judges the derivation from the inputs on the page, not from a label that has absorbed them.
 
 3. **Model inference is `Estimated` and never sits in a column that a reader will scan as a measurement.** The query-pattern intent read is the one place `Estimated` belongs, because the pack shows the SERP-read column beside it.
 
@@ -71,6 +71,6 @@ It never replaces the `Unknown` line, never appears without its inputs, and neve
 
 ## 4. The evidence-basis count
 
-The handoff summary carries `Evidence basis: n Measured, n User-provided, n Estimated, n Unknown`.
+The handoff summary carries `Evidence basis: n Measured, n User-provided, n Calculated, n Estimated, n Unknown`.
 
-Count every labelled value in the pack, once each. `Calculated` values are counted under the weakest label among their inputs, and the pack states that this is the convention used. The counts must sum to the number of labelled values in the pack — this is a `Done when` item and is checked by counting, not by judgement.
+Count every labelled value in the pack, once each, under the label it carries. `Calculated` is counted as itself — it is one of the five labels in policy kernel §2 and gets its own count. The counts must sum to the number of labelled values in the pack — this is a `Done when` item and is checked by counting, not by judgement.

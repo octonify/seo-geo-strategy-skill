@@ -142,8 +142,7 @@ Overall: <complete / partial / stopped>
 - **Unit:** <unit>
 - **Status:** complete | partial | stopped
 - **Produced:** <artifact paths, or "in-session pack only">
-- **Evidence basis:** <n> Measured, <n> User-provided, <n> Estimated, <n> Unknown
-  (Calculated values counted under the weakest label among their inputs)
+- **Evidence basis:** <n> Measured, <n> User-provided, <n> Calculated, <n> Estimated, <n> Unknown
 - **Assumptions:** <each assumption made without asking, or "none">
 - **Open questions:** <each unresolved item, or "none">
 - **Recommended next:** content-strategy-architect | return to operator
