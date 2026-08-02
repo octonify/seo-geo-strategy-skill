@@ -1,0 +1,24 @@
+# Windows
+desktop.ini
+Thumbs.db
+
+# macOS
+.DS_Store
+
+# Editors
+.vscode/
+.idea/
+*.swp
+
+# Local agent settings
+.claude/settings.local.json
+
+# Secrets — never commit
+.env
+.env.*
+*.key
+*.pem
+
+# Scratch
+/tmp/
+/scratch/

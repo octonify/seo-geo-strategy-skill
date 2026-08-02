@@ -1,0 +1,131 @@
+# project-config.schema.yaml
+#
+# Defines the values a consuming project must supply. The consuming project
+# places a filled `project-config.yaml` next to the installed Skills.
+#
+# No Skill file in this bundle may hardcode any value defined here.
+# A Skill that needs a key not present in the consumer's config stops and
+# names the missing key. It never assumes a default.
+
+schema_version: 1
+
+required:
+
+  client:
+    id:
+      type: string
+      description: Stable slug for the client. Used in record paths and IDs.
+      example: dnc
+    display_name:
+      type: string
+      example: Divine Naturopathic Clinic & Wellness Center
+
+  authority:
+    authority_override_skill:
+      type: string
+      description: >
+        Name of the client's voice and safety Skill. Per policy-kernel.md §1,
+        this Skill always outranks this bundle on wording, claim strength,
+        specificity, tone, and CTA framing. Structural recommendations from
+        this bundle are still accepted.
+      example: dnc-content-voice
+      note: >
+        Onboarding prerequisite. A consuming project without this Skill
+        cannot complete the chain — the brief has no consumer.
+
+  site:
+    canonical_host:
+      type: string
+      description: >
+        The live canonical host, exact scheme and subdomain. Any differing
+        host found in a package, record, or stored value is a finding, not
+        an authority to follow.
+      example: https://divinenaturopathic.com
+    cms:
+      type: string
+      enum: [wordpress, other]
+    seo_plugin:
+      type: string
+      enum: [rank-math, yoast, aioseo, none]
+
+  market:
+    primary_locality:
+      type: string
+      description: Primary city or metro for local intent validation.
+      example: Kirkland, WA
+    national_dataset:
+      type: string
+      description: Country dataset used to cross-check thin local volume.
+      example: US
+    language:
+      type: string
+      example: en-US
+
+  research_tools:
+    available:
+      type: list
+      description: >
+        Tools the operator can actually reach. Skills degrade to
+        operator-pasted data when this list is empty; they never require a
+        paid tool.
+      example: [semrush]
+    access_mode:
+      type: string
+      enum: [manual_paste, browser_agent, api]
+      description: >
+        How data reaches the agent. `manual_paste` means the operator runs
+        the tool and pastes results. `browser_agent` means the agent drives
+        the tool UI directly.
+
+  planning_record:
+    path:
+      type: string
+      description: Path to the consuming project's planning database.
+      example: content-production/01_sources/content-database/current/Content-Database.csv
+    owned_fields:
+      type: list
+      description: >
+        Exactly which columns this bundle may write. Any field not listed
+        is owned by another layer and must never be overwritten.
+        Per policy-kernel.md §6.
+    row_identifier_field:
+      type: string
+      description: >
+        The column that uniquely identifies a row. If the consuming project
+        has no stable identifier column, this is a blocking gap: Skills
+        stop rather than matching rows by title similarity.
+
+optional:
+
+  local_presence:
+    gbp_profile_name:
+      type: string
+      description: Business name exactly as it appears on Google Business Profile.
+    canonical_nap:
+      name:
+        type: string
+      address:
+        type: string
+        note: One exact format, agreed once. Suite vs Unit vs Ste is a decision, not a variant.
+      phone:
+        type: string
+    service_area_mode:
+      type: string
+      enum: [storefront, service_area, hybrid]
+
+  constraints:
+    excluded_topics:
+      type: list
+      description: >
+        Topics the client has ruled out. Skills must not propose these
+        regardless of search opportunity.
+    held_topics:
+      type: list
+      description: >
+        Topics requiring a named approval before proposal. Skills surface
+        these as blocked-pending-approval, never as ready recommendations.
+    retired_services:
+      type: list
+      description: >
+        Services no longer offered. Skills must not propose content or link
+        targets for these, and must flag existing references to them.

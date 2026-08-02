@@ -1,0 +1,23 @@
+Copyright (c) 2026 Arwin / octonify. All rights reserved.
+
+This software and its accompanying documentation are proprietary and
+confidential. No part of this repository may be copied, reproduced,
+distributed, published, transmitted, modified, or used to create derivative
+works, in whole or in part, without the prior written permission of the
+copyright holder.
+
+Access to this repository does not grant any licence, express or implied, to
+any intellectual property contained within it.
+
+---
+
+ATTRIBUTION OF INFLUENCE
+
+The architectural approach used here — a shared execution contract across
+skills, explicit evidence classification, and declared decision gates — was
+informed by studying the publicly available, Apache-2.0 licensed repository
+`aaron-he-zhu/aaron-marketing-skills`.
+
+No source text, file, schema, or script from that repository is reproduced in
+this one. All content here is independently authored. This note records
+intellectual influence, not code reuse, and creates no licence obligation.
