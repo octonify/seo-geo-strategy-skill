@@ -105,7 +105,7 @@ Every methodological claim encoded was checked before being written, not after. 
 
 ## Commit
 
-`<hash>` — `feat: author local-presence-manager skill and its reference layer`
+`deab315` — `feat: author local-presence-manager skill and its reference layer`
 
 Preceded in this session by one fix commit carrying the authorised shared-layer work:
 
