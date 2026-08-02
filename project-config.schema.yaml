@@ -105,6 +105,16 @@ optional:
         Skill emits its pack in session and says so; it never invents a path.
       example: content-production/01_sources/research
 
+  architecture_output:
+    path:
+      type: string
+      description: >
+        Directory for cluster architecture records and content briefs.
+        Deliberately separate from `research_output.path` — an architecture
+        record is not research output. When absent, the record is emitted in
+        session and says so; a path is never invented.
+      example: content-production/02_content-items
+
   local_presence:
     gbp_profile_name:
       type: string

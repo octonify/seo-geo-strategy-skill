@@ -118,7 +118,7 @@ The negative case is instructive: a sibling project's planning database mixed on
 
 ---
 
-## D11 — Research produces evidence and names no target — 2026-08-03
+## D11 — Research produces evidence and names no target — 2026-08-02
 
 **Decision.** `seo-geo-research` outputs a labelled evidence pack. It selects nothing, ranks nothing, and sequences nothing. `Done when` item 11 enforces this mechanically: the pack may contain no column headed `Priority`, `Score`, `Tier`, `Rank`, or `Quick win`, and no section headed `Recommendation`, `Primary keyword`, `Cluster`, `Content calendar`, or `Next steps`.
 
@@ -132,7 +132,7 @@ The negative case is instructive: a sibling project's planning database mixed on
 
 ---
 
-## D12 — Reject every composite priority score — 2026-08-03
+## D12 — Reject every composite priority score — 2026-08-02
 
 **Decision.** No weighted composite score appears anywhere in this Skill. Difficulty is read as a set of separately-labelled inputs (`serp-read-protocol.md` §6), never as one number of our own construction.
 
@@ -150,7 +150,7 @@ Second, a score exists to rank candidates against each other, and ranking candid
 
 ---
 
-## D13 — SERP composition is `Measured` or `Unknown`, never `Estimated` — 2026-08-03
+## D13 — SERP composition is `Measured` or `Unknown`, never `Estimated` — 2026-08-02
 
 **Decision.** A SERP was observed or it was not. A model's expectation of what a SERP probably contains is not evidence about what it contains, and this Skill has no label for it.
 
@@ -160,11 +160,11 @@ This is **stricter than policy kernel §2**, which permits `Estimated` for model
 
 **This is an addition, not codified past practice.** The archived Gut Health research recorded SERP screenshots as evidence but had no rule preventing an unobserved SERP from being described. Flagged per the D9 pattern so it is not mistaken for precedent.
 
-**External validation.** Search, 2026-08-03: current guidance treats tool difficulty scores as estimates that vary substantially between tools and holds that manual SERP inspection is required to catch what a score misses — a high-difficulty query whose top ten is thin, outdated, or directory-filled. That is an argument for observation over inference, which is what this rule makes non-optional.
+**External validation.** Search, 2026-08-02: current guidance treats tool difficulty scores as estimates that vary substantially between tools and holds that manual SERP inspection is required to catch what a score misses — a high-difficulty query whose top ten is thin, outdated, or directory-filled. That is an argument for observation over inference, which is what this rule makes non-optional.
 
 ---
 
-## D14 — A tool-reported zero is `Unknown`, never a demand figure — 2026-08-03
+## D14 — A tool-reported zero is `Unknown`, never a demand figure — 2026-08-02
 
 **Decision.** When a keyword tool reports local volume as `0`, the pack records `Unknown — tool reports 0 for <locality>` and carries the national figure on the same row. Both lines always appear together. `Done when` item 5 enforces it: no volume cell may contain `0`.
 
@@ -174,11 +174,11 @@ A population-ratio figure (`national × locality population ÷ dataset populatio
 
 **Evidence from the validation case.** The archived Gut Health keyword list holds 204 rows, of which 58 carry a blank volume and 8 carry `0`. Among them, `naturopathic doctor for gut health` is recorded as volume `0`, difficulty `0`, intent blank — and was rejected for "insufficient demand". Its locality-set SERP is populated, carries a local pack, and returns three comparable local providers in its top three. Zero data and zero demand were treated as the same fact.
 
-**External validation.** Search, 2026-08-03: geo-modified queries in smaller markets routinely return zero from tools that carry real national volume for the same phrase, because the tool lacks per-city coverage rather than because demand is absent. The population-ratio derivation is the commonly-cited workaround, and is treated in that guidance as an estimate — which is why it is admitted here only as a labelled `Calculated` value beside the `Unknown`, not instead of it.
+**External validation.** Search, 2026-08-02: geo-modified queries in smaller markets routinely return zero from tools that carry real national volume for the same phrase, because the tool lacks per-city coverage rather than because demand is absent. The population-ratio derivation is the commonly-cited workaround, and is treated in that guidance as an estimate — which is why it is admitted here only as a labelled `Calculated` value beside the `Unknown`, not instead of it.
 
 ---
 
-## D15 — Intent is classified twice, and the SERP wins — 2026-08-03
+## D15 — Intent is classified twice, and the SERP wins — 2026-08-02
 
 **Decision.** Every candidate carries two intent classifications: Pass A from the query pattern (`Estimated`, always) and Pass B from the observed SERP (`Measured` or `Unknown`, never `Estimated`). Where they disagree, Pass B is authoritative and **both are kept**, with the disagreement recorded as a finding.
 
@@ -186,13 +186,13 @@ A population-ratio figure (`national × locality population ÷ dataset populatio
 
 **Evidence from the validation case.** `gut health doctor` returns intent `Informational` at the US dataset and `Navigational` at Kirkland, WA — the same string, the same tool, the same day. The cause is visible only in the SERP: one brand entity whose name is the query holds positions 1 (with sitelinks), 2 (its Instagram profile) and 3. A single-value intent column would have recorded one of those two labels and lost the reason for both.
 
-**Sub-intent is an addition, flagged.** The four-class scheme is too coarse to imply a page format. A seven-value sub-intent layer (definitional, instructional, diagnostic, comparative, reassurance, provider-seeking, access) is attached and marked as an addition wherever it appears. **External validation.** Search, 2026-08-03: current guidance holds that the traditional four-intent classification is no longer granular enough and that narrower sub-intents each call for a different content format, with SERP-feature presence the most reliable secondary signal for refining the classification.
+**Sub-intent is an addition, flagged.** The four-class scheme is too coarse to imply a page format. A seven-value sub-intent layer (definitional, instructional, diagnostic, comparative, reassurance, provider-seeking, access) is attached and marked as an addition wherever it appears. **External validation.** Search, 2026-08-02: current guidance holds that the traditional four-intent classification is no longer granular enough and that narrower sub-intents each call for a different content format, with SERP-feature presence the most reliable secondary signal for refining the classification.
 
 **Boundary.** Sub-intent names a format. It never names the wording. What a reassurance-intent query should be answered *with* is decided by the Skill in `authority.authority_override_skill`.
 
 ---
 
-## D16 — Search Console query mining is a discovery source, not rank tracking — 2026-08-03
+## D16 — Search Console query mining is a discovery source, not rank tracking — 2026-08-02
 
 **Decision.** `seo-geo-research` may read a Search Console query export once, for the current run, as discovery source 2. It records position as an observed value at the export date. It does not establish a cadence, compare against a prior run, or report movement.
 
@@ -204,7 +204,7 @@ A population-ratio figure (`national × locality population ÷ dataset populatio
 
 ---
 
-## D17 — Research reads and writes no planning record — 2026-08-03
+## D17 — Research reads and writes no planning record — 2026-08-02
 
 **Decision.** `seo-geo-research` does not read `planning_record.path`, `planning_record.owned_fields`, or `planning_record.row_identifier_field`, and writes no planning row.
 
@@ -214,17 +214,17 @@ A population-ratio figure (`national × locality population ÷ dataset populatio
 
 ---
 
-## D18 — No config key for the research output path; the operator supplies it — 2026-08-03
+## D18 — No config key for the research output path; the operator supplies it — 2026-08-02
 
 **Decision.** The pack is always emitted in session. A file is written only to a directory the operator supplies at run time, as `<dir>/<client.id>-<topic-slug>-keyword-evidence-<YYYY-MM-DD>.md`. No directory is assumed and no path is invented.
 
 **Why.** `project-config.schema.yaml` defines no key for a research output directory, and that file is shared-layer foundation this task was not authorised to edit. Inventing a path would violate `skill-contract.md` §6; adding a required key would edit the foundation; making it a *required* runtime input would block a Skill that has a perfectly good in-session output.
 
-**Recorded as a proposal, not implemented.** An optional `research_output.path` key would remove the run-time question. It is not added here. See the run report for 2026-08-03.
+**Recorded as a proposal, not implemented.** An optional `research_output.path` key would remove the run-time question. It is not added here. See the run report `docs/run-reports/2026-08-03-seo-geo-research.md` (filename retains the mis-stamped date per D34).
 
 ---
 
-## D19 — Skill files carry `version: 0.0.0-unreleased` until the first tag — 2026-08-03
+## D19 — Skill files carry `version: 0.0.0-unreleased` until the first tag — 2026-08-02
 
 **Decision.** Every `SKILL.md` in this bundle carries `version: 0.0.0-unreleased` in frontmatter until a release is cut.
 
@@ -234,7 +234,7 @@ A population-ratio figure (`national × locality population ÷ dataset populatio
 
 ---
 
-## D20 — Source package cherry-pick ledger, packages 06–11 — 2026-08-03
+## D20 — Source package cherry-pick ledger, packages 06–11 — 2026-08-02
 
 Every candidate file read before the accept/reject call. Apache-2.0 source; **no text reproduced from any of them**, per D1.
 
@@ -266,7 +266,7 @@ Every candidate file read before the accept/reject call. Apache-2.0 source; **no
 
 ---
 
-## D21 — Confirm D16, with the boundary tightened — 2026-08-03
+## D21 — Confirm D16, with the boundary tightened — 2026-08-02
 
 **Decision.** A Search Console query export is admitted as a discovery source. The line against the `architecture.md` §6 exclusion is drawn at the **operation**, not the data source.
 
@@ -280,7 +280,7 @@ Forbidden, and this is what §6 excludes: retaining exports for period-over-peri
 
 ---
 
-## D22 — Add `research_output.path` to the schema as optional — 2026-08-03
+## D22 — Add `research_output.path` to the schema as optional — 2026-08-02
 
 **Decision.** Approve the D18 proposal. `project-config.schema.yaml` gains an optional `research_output.path`. Coordinating-agent authority; D18 correctly declined to self-authorise a shared-layer edit.
 
@@ -288,7 +288,7 @@ Forbidden, and this is what §6 excludes: retaining exports for period-over-peri
 
 ---
 
-## D23 — `Calculated` added to the handoff evidence-basis line — 2026-08-03
+## D23 — `Calculated` added to the handoff evidence-basis line — 2026-08-02
 
 **Decision.** `skill-contract.md` §5 now enumerates all five labels. The local convention of folding `Calculated` under its weakest input label is withdrawn.
 
@@ -443,3 +443,23 @@ Every candidate file read before the accept/reject call. Apache-2.0 source; **no
 **Not implemented.** The schema is shared layer, and this task's authority covered only the four edits already made. `research_output.path` was deliberately **not** reused: it names where research output goes, and a cluster architecture record is not research output. Widening an existing key's meaning silently is worse than leaving the question open.
 
 **Current behaviour, which is not broken.** The record is emitted in session, or written to a directory the operator supplies at run time. No path is invented. The planning-record write is unaffected — it goes to `planning_record.path`, which is already a required key.
+
+---
+
+## D34 — Correct the D11–D23 dates; leave run reports untouched — 2026-08-02
+
+**Decision.** `docs/decisions.md` entries D11–D23 were stamped 2026-08-03. Every commit timestamp for that work, and the environment date throughout, reads 2026-08-02. The headings and the in-body validation dates are corrected to 2026-08-02. The run report `docs/run-reports/2026-08-03-seo-geo-research.md` keeps its filename and its contents unchanged.
+
+**Why the two are treated differently.** `decisions.md` is a **current record**: a later session reads it to learn what is settled, and non-monotonic dates — D24 appearing to precede D23 — actively mislead. A run report is **historical evidence**: it records what was true when written, and `docs/run-reports/README.md` forbids editing one. Correcting a current record and preserving a historical one is the same principle applied to two different kinds of document.
+
+**Origin.** The first authoring run mis-stamped itself, and the coordinating agent propagated the error into D21–D23 by following it. Recorded so the next session does not re-derive the discrepancy from the filename mismatch.
+
+**Standing rule from here.** Date every entry from the environment date, not from a neighbouring document.
+
+---
+
+## D35 — Add `architecture_output.path` to the schema as optional — 2026-08-02
+
+**Decision.** Approve the D33 proposal. `project-config.schema.yaml` gains an optional `architecture_output.path`, separate from `research_output.path`. Coordinating-agent authority; D33 correctly declined to self-authorise a shared-layer edit.
+
+**Why.** Same shape as D22 and not a scope expansion — the Skill already writes a record when given a destination. Keeping the two keys separate is deliberate: a cluster architecture record is not research output, and quietly widening an existing key's meaning is worse than adding one.
